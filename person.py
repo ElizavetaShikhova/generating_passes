@@ -3,9 +3,9 @@ from enum import Enum
 
 
 class Status(Enum):
-    student = 'Обучающийся'
-    participant = 'Участник мероприятия'
-    prep_course_student = 'Слушатель подготовительных курсов'
+    student = 'ОБУЧАЮЩИЙСЯ'
+    participant = 'УЧАСТНИК МЕРОПРИЯТИЯ'
+    prep_course_student = 'СЛУШАТЕЛЬ ПОДГОТОВИТЕЛЬНЫХ КУРСОВ'
 
 
 class Person:
