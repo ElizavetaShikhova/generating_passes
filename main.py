@@ -4,7 +4,7 @@ from os import listdir
 import csv
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog,QTableWidget,QTableWidgetItem
 
 
 class MyWidget(QMainWindow):
@@ -15,6 +15,9 @@ class MyWidget(QMainWindow):
         self.comboBox.currentIndexChanged.connect(self.choose_mode)
         self.pushButton_2.clicked.connect(self.choose_photo)
         self.pushButton.clicked.connect(self.make_pdf)
+        self.pushButton_3.clicked.connect(self.from_txt)
+        self.pushButton_4.clicked.connect(self.from_csv)
+        self.pushButton_5.clicked.connect(self.from_exe)
         self.dateEdit.setDate(datetime.now())
         self.choose_mode()
 
@@ -32,8 +35,8 @@ class MyWidget(QMainWindow):
             if self.mode == 1:  # генерация пропуска для 1 человека
                 pass
 
-            elif self.mode == 2:  # генерация пропусков для многих
-                with open('C:/Users/User/Desktop/smth/sample.csv', encoding="utf8") as csvfile:
+            elif self.mode == 2:  # генерация пропусков для многих из csv
+                with open(f'{self.path_of_dir}/sample.csv', encoding="utf8") as csvfile:
                     reader = csv.reader(csvfile, delimiter=';', quotechar='"')
                     for person in reader:
                         self.surname = person[0]
@@ -43,14 +46,25 @@ class MyWidget(QMainWindow):
                         self.date = person[4]
                         self.path_of_photo = self.path_of_dir + f'/_photos/{self.surname}_{self.name}.jpg'
                         pass
-                        #Все переменные приведены к тому же виду, что и для генерации для 1 человека, так что можно сделать отдельную одну функцию для этого
+                        # Все переменные приведены к тому же виду, что и для генерации для 1 человека, так что можно сделать отдельную одну функцию для этого
 
-            else:  # генерация пропусков для посетителей
-                self.count = self.spinBox.value() #кол-во пропусков(int)
-                self.initial_number = self.spinBox_2.value() #начальный номер (int)
+            elif self.mode==3:  # генерация пропусков для посетителей
+                self.count = self.spinBox.value()  # кол-во пропусков(int)
+                self.initial_number = self.spinBox_2.value()  # начальный номер (int)
 
+            elif self.mode == 4: #для многих из txt
+                pass
 
-            self.dormitory, self.path_of_photo, self.name, self.surname, self.date, self.who,self.path_of_dir = None, None, None, None, None, None,None
+            elif self.mode == 5: #для многих из програмки
+                for i in range(100):
+                    for j in range(5):
+                        try:
+                            print(self.table.item(i, j).text(),end=' ')
+                        except Exception:
+                            break #Выйти бы из двух циклов сразу
+                    print()
+
+            self.dormitory, self.path_of_photo, self.name, self.surname, self.date, self.who, self.path_of_dir = None, None, None, None, None, None, None
             self.lineEdit.setText('')
             self.lineEdit_2.setText('')
             self.dateEdit.setDate(datetime.now())
@@ -83,7 +97,8 @@ class MyWidget(QMainWindow):
                     self.label_7.setText('Не хватает данных')
                     self.label_7.show()
                     return False
-            if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[-4:]:  # вдруг, фото не jpg (но может и не надо такое)
+            if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[
+                                                                      -4:]:  # вдруг, фото не jpg (но может и не надо такое)
                 self.label_7.setText('Неверный формат\nфото')
                 self.label_7.show()
                 return False
@@ -112,22 +127,51 @@ class MyWidget(QMainWindow):
         else:
             self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку', '')[0]
 
+    def from_csv(self):
+        self.hide_everything()
+        self.mode = 2
+        self.pushButton_2.setText('Выбрать папку')
+        self.show_widgets([self.pushButton_2,self.pushButton,self.label_4])
+
+    def from_txt(self):
+        self.hide_everything()
+        self.mode = 4
+        self.pushButton_2.setText('Выбрать папку')
+        self.show_widgets([self.pushButton_2, self.pushButton,self.label_4])
+
+    def from_exe(self):
+        self.hide_everything()
+        self.mode = 5
+        self.show_widgets([self.pushButton])
+
+        self.table = QTableWidget(self)
+        self.table.resize(551, 361)
+        self.table.move(220, 165)
+        self.table.setStyleSheet('background:rgb(255, 255, 255)')
+        self.table.show()
+        self.table.setColumnCount(5)
+        self.table.setRowCount(100)
+
+        a = ['фамилия','имя','статус(ПК/У/Обуч)','общага(да/нет)','дата']
+        for i in range(len(a)):
+            self.table.setHorizontalHeaderItem(i, QTableWidgetItem(a[i]))
+
+
     def choose_mode(self):  # В зависимости от "режима" показываем определенные виджеты
         self.hide_everything()
-        if self.comboBox.currentText() == 'Нескольким людям':
-            self.mode = 2
-            self.pushButton_2.setText('Выбрать папку')
-            self.show_widgets([self.label_4, self.label_2, self.pushButton_2])
-
-        elif self.comboBox.currentText() == 'Одному человеку':
+        if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
-                 self.label_3, self.dateEdit, self.pushButton_2])
+                 self.label_3, self.dateEdit, self.pushButton_2,self.pushButton])
+
+        elif self.comboBox.currentText() == 'Нескольким людям':
+            self.show_widgets([self.pushButton_3,self.pushButton_4,self.pushButton_5])
+
         elif self.comboBox.currentText() == 'Посетителям':
             self.mode = 3
-            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2])
+            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2,self.pushButton])
 
     def show_widgets(self, widgets):
         for i in widgets:
@@ -136,7 +180,8 @@ class MyWidget(QMainWindow):
     def hide_everything(self):
         all_widgets = [self.dateEdit, self.spinBox, self.spinBox_2, self.radioButton, self.radioButton_2,
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
-                       self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7]
+                       self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
+                       self.pushButton_3, self.pushButton_4, self.pushButton_5,self.pushButton]
         for i in all_widgets:
             i.hide()
 
