@@ -120,7 +120,7 @@ class GenPdf:
     def write(self, output_file: str):
         # чтобы еще раз напечатать pdf-ку надо заново инициализировать экземпляр
         if self.already_written:
-            raise Exception('Этот экземпляр класса уже однажды выписал пропуска (дайте ему отдохнуть, он устал).'
+            raise Exception('Этот экземпляр класса уже однажды выписал пропуска (дайте ему отдохнуть, он устал). '
                             'Чтобы еще раз написать pdf, надо переинициализировать его')
         self.pdf.output(output_file)
         self.already_written = True
