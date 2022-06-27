@@ -1,4 +1,3 @@
-from datetime import date
 from typing import List
 from person import Person, Status
 from fpdf import FPDF, set_global
@@ -130,13 +129,21 @@ class GenPdf:
 '''
 
 if __name__ == '__main__':
+    from datetime import date
+    from parsing import Parser
+
     generator = GenPdf()
-    generator.create_person(Person('Эйнштейн', 'Альберт', date(2023, 9, 1), Status.student, True, 'src/test_photo.jpg'))
-    generator.write('aboba.pdf')
-    
-    # в сотый раз повторяю, что для повторной генерации надо переинициализировать экземпляр класса
+    generator.create_person(Person('Эйнштейн', 'Альберт', date(2023, 9, 1), Status.student, True, 'samples/Эйнштейн_Альберт.jpg'))
+    generator.write('samples/pdf_sample_1.pdf')
+
+    generator.__init__()  # в сотый раз повторяю, что для повторной генерации надо переинициализировать экземпляр класса
+    parser = Parser()
+    parser.parse_from_txt('samples/input_sample.txt', 'samples/')
+    generator.create_group(parser.get_person_list())
+    generator.write('samples/pdf_sample_2.pdf')
+
     generator.__init__()
     generator.create_guests(2, 13)
-    generator.write('amogus.pdf')
+    generator.write('samples/pdf_sample_3.pdf')
 
 #'''
