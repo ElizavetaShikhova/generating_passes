@@ -9,10 +9,10 @@ class Status(Enum):
 
 
 class Person:
-    def __init__(self, surname: str, name: str, status: Status, dorm: bool, expired: date, photo: str):
+    def __init__(self, surname: str, name: str, expired: date, status: Status, dorm: bool, photo: str):
         self.surname = surname
         self.name = name
+        self.expired = expired
         self.status = status
         self.dorm = dorm
-        self.expired = expired
         self.photo = photo

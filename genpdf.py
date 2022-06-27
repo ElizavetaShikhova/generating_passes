@@ -1,7 +1,6 @@
 from datetime import date
 from typing import List
-from person import Person
-from person import Status
+from person import Person, Status
 from fpdf import FPDF, set_global
 
 
@@ -70,9 +69,8 @@ class GenPdf:
 
         try:
             self.pdf.image(person.photo, 5, 14, 24, 32, type='JPG')  # если все круто, то маленький художник, который сидит в FPDF.pdf.image, рисует главного героя этого пропуска
-        except Exception as e:  # но всегда что-то может пойти не так
-            etext = e.args[0]  # текст ошибки неочевидно находится в e.args[0]
-            return etext[etext.find('error: [Errno 2] ') + 17:]  # возвращаем текст ошибки, начиная с самой сути (для этого и прибавляется 17)
+        except Exception as e:  # но всегда что-то может пойти не так, например, фото не доступно
+            return f'Фотография для {person.name + " " + person.surname} не найдена'
             # волноваться не стоит - текст ошибки всегда один и тот же. он всегда говорит, что файлик не нашелся
 
         self.pdf.set_font('PFM', 'bold')  # пока вместо начального шрифта властвовал "нормальный", тот успел навестить бабушку в деревне и от этого потолстеть (ох уж эти бабушки, всегда тебя накормят, даже если ты только что сотню пирожков съел)
