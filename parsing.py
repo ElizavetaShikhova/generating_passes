@@ -3,6 +3,7 @@ import os
 import csv
 from person import Person, Status
 from PyQt5.QtWidgets import QTableWidget
+from exception import CustomException
 
 
 class Parser:
@@ -54,9 +55,9 @@ class Parser:
         person = Person('', '', date(1, 1, 1), Status.student, False, '')
 
         if not surname:
-            raise Exception(f'Не введена фамилия для человека с именем "{name}"')
+            raise CustomException(f'Не введена фамилия для человека с именем "{name}"')
         if not name:
-            raise Exception(f'Не введено имя для человека с фамилией "{surname}"')
+            raise CustomException(f'Не введено имя для человека с фамилией "{surname}"')
 
         person.surname = surname.capitalize()
         person.name = name.capitalize()
@@ -67,7 +68,7 @@ class Parser:
             person.expired = datetime.strptime(expired, '%d.%m.%Y')
         except ValueError:
             self.clear()
-            raise Exception(f'Дата окончания срока действия пропуска для '
+            raise CustomException(f'Дата окончания срока действия пропуска для '
                             f'{_full_name_for_exceptions} введена неправильно: {expired}')
 
         if status == self.terms[cur_terms]['status_student']:
@@ -78,7 +79,7 @@ class Parser:
             person.status = Status.prep_course_student
         else:
             self.clear()
-            raise Exception(f'Статус для {_full_name_for_exceptions} введен неправильно: {status}')
+            raise CustomException(f'Статус для {_full_name_for_exceptions} введен неправильно: {status}')
 
         if dorm == self.terms[cur_terms]['dorm_yes']:
             person.dorm = True
@@ -86,14 +87,14 @@ class Parser:
             person.dorm = False
         else:
             self.clear()
-            raise Exception(f'Факт проживания в общежитии для {_full_name_for_exceptions} введен неправильно: {dorm}')
+            raise CustomException(f'Факт проживания в общежитии для {_full_name_for_exceptions} введен неправильно: {dorm}')
 
         _path_to_photo = photos_dir + os.sep + f'{person.surname}_{person.name}.jpg'
         if os.path.exists(_path_to_photo):
             person.photo = _path_to_photo
         else:
             self.clear()
-            raise Exception(f'Нет фотографии для {_full_name_for_exceptions}. Возможно, она есть, только подписана неправильно :)')
+            raise CustomException(f'Нет фотографии для {_full_name_for_exceptions}. Возможно, она есть, только подписана неправильно :)')
 
         return person
 

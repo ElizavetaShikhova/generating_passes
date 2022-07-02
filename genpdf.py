@@ -1,6 +1,7 @@
 from typing import List
 from person import Person, Status
 from fpdf import FPDF, set_global
+from exception import CustomException
 
 
 class GenPdf:
@@ -76,7 +77,7 @@ class GenPdf:
         try:
             self.pdf.image(person.photo, 5, 14, 24, 32, type='JPG')
         except RuntimeError:
-            raise Exception(f'Фотография для {person.surname + " " + person.name} не найдена')
+            raise CustomException(f'Фотография для {person.surname + " " + person.name} не найдена')
 
         self.pdf.set_font('PFM', 'bold')
         self.set_color_n_size(0, 128, 0, 7)
@@ -96,7 +97,7 @@ class GenPdf:
         делаем пропуски для гостей/посетителей
         """
         if start_number <= 0 or total_number <= 0:
-            raise Exception('Ты че, самый умный? А ну живо убрал ненатуральные числа!')
+            raise CustomException('Ты че, самый умный? А ну живо убрал ненатуральные числа!')
 
         for serial_number in range(start_number, start_number+total_number):
             self.pdf.add_page()
