@@ -129,6 +129,8 @@ class Parser:
         """
         for cur_row_ind in range(table.rowCount()):
             _surname, _name, _expired, _status, _dorm = [table.item(cur_row_ind, i).text() for i in range(5)]
+            if not (_surname or _name or _expired or _status or _dorm):
+                continue
             person = self.__check_n_get_person('table', photos_dir, _surname, _name, _expired, _status, _dorm)
             self.plist.append(person)
 
