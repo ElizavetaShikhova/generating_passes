@@ -2,7 +2,7 @@ from datetime import date, datetime
 import os
 import csv
 from person import Person, Status
-from PyQt5.QtWidgets import QTableWidget
+from PyQt5.QtWidgets import QTableWidget, QLineEdit, QRadioButton, QComboBox, QDateEdit
 from exception import CustomException
 
 
@@ -15,28 +15,28 @@ class Parser:
 
         # информацию о формате данных смотреть, не знаю, где ( на момент разработки она еще не опубликована:) )
         # возможно, в readme, но точно не тут
-        self.__txt_terms = {
+        __txt_terms = {
             'status_student': 'об',
             'status_participant': 'ум',
             'status_prep_course_student': 'пк',
             'dorm_yes': '',
             'dorm_no': 'общ'
         }
-        self.__csv_terms = {
+        __csv_terms = {
             'status_student': '',
             'status_participant': 'У',
             'status_prep_course_student': 'ПК',
             'dorm_yes': '',
             'dorm_no': 'общ'
         }
-        self.__table_terms = {
+        __table_terms = {
             'status_student': 'об',
             'status_participant': 'ум',
             'status_prep_course_student': 'пк',
             'dorm_yes': 'д',
             'dorm_no': 'н'
         }
-        self.terms = {'txt': self.__txt_terms, 'csv': self.__csv_terms, 'table': self.__table_terms}
+        self.terms = {'txt': __txt_terms, 'csv': __csv_terms, 'table': __table_terms}
 
     def clear(self):
         """
@@ -75,7 +75,7 @@ class Parser:
         except ValueError:
             self.clear()
             raise CustomException(f'Дата окончания срока действия пропуска для '
-                            f'{_full_name_for_exceptions} введена неправильно: {expired}')
+                                  f'{_full_name_for_exceptions} введена неправильно: {expired}')
 
         if status == self.terms[cur_terms]['status_student']:
             person.status = Status.student
