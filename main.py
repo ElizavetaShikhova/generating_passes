@@ -33,23 +33,17 @@ class MainWindow(QMainWindow):
         self.name - строка с именем
         self.surname - строка с фамилией
         self.date - строка(day.month.year) окончания срока действия
-        self.who - строка (""/ПК/У)
         self.path_of_pdf - куда сохранить pdf'''
 
     def pdf_for_one_person(self,generator):
         self.dormitory = self.radioButton.isChecked()
-        if self.lineEdit.text():
-            self.surname = self.lineEdit.text().capitalize()
-        if self.lineEdit_2.text():
-            self.name = self.lineEdit_2.text().capitalize()
+        self.surname = self.lineEdit.text().capitalize()
+        self.name = self.lineEdit_2.text().capitalize()
         if self.comboBox_2.currentText() == 'Обучающийся':
-            self.who = ""
             st = Status.student
         elif self.comboBox_2.currentText() == 'Слушатель ПК':
-            self.who = "ПК"
             st = Status.prep_course_student
         elif self.comboBox_2.currentText() == 'Участник мероприятия':
-            self.who = "У"
             st = Status.participant
         self.date = self.dateEdit.text()
         person = Person(self.surname, self.name, datetime.strptime(self.date, '%d.%m.%Y'), st, self.dormitory, self.path_of_photo)
