@@ -50,6 +50,12 @@ class Parser:
         cur_terms может быть одним из следующих значений: 'txt', 'csv', 'table'
         """
 
+        # небольшая подготовка данных
+        surname = surname.capitalize()
+        name = name.capitalize()
+        status = status.lower()
+        dorm = dorm.lower()
+
         # создаем пустого, ничего из себя не представляющего человека для того
         # чтобы потом заполнить поля последовательно
         person = Person('', '', date(1, 1, 1), Status.student, False, '')
@@ -59,8 +65,8 @@ class Parser:
         if not name:
             raise CustomException(f'Не введено имя для человека с фамилией "{surname}"')
 
-        person.surname = surname.capitalize()
-        person.name = name.capitalize()
+        person.surname = surname
+        person.name = name
 
         _full_name_for_exceptions = person.surname + " " + person.name
 
