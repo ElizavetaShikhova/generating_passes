@@ -2,7 +2,7 @@ from datetime import date, datetime
 import os
 import csv
 from person import Person, Status
-from PyQt5.QtWidgets import QTableWidget, QLineEdit, QRadioButton, QComboBox, QDateEdit
+from PyQt5.QtWidgets import QTableWidget
 from exception import CustomException
 
 
