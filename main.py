@@ -1,20 +1,19 @@
 import sys
-from datetime import datetime, date
-from os import listdir
-import csv
+from datetime import datetime
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QMessageBox
 
 from parsing import Parser
 from genpdf import GenPdf
 from person import Person, Status
+from exception import CustomException
 
 
-class MyWidget(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('window.ui', self)
+        uic.loadUi('src/window.ui', self)
         self.hide_everything()
         self.comboBox.currentIndexChanged.connect(self.choose_mode)
         self.pushButton_2.clicked.connect(self.choose_photo)
@@ -23,10 +22,11 @@ class MyWidget(QMainWindow):
         self.pushButton_3.clicked.connect(self.from_txt)
         self.pushButton_4.clicked.connect(self.from_csv)
         self.pushButton_5.clicked.connect(self.from_exe)
+        self.pushButton_7.clicked.connect(self.choose_mode)
         self.dateEdit.setDate(datetime.now())
         self.choose_mode()
 
-        self.dormitory, self.path_of_photo, self.name, self.surname, self.date, self.who, self.path_of_dir, self.path_of_pdf = None, None, None, None, None, None, None, None
+        self.clear()
         '''self.dormitory - надо общагу или нет
         self.path_of_photo - строка с путем до фото
         self.path_of_dir - до папки с фото
@@ -36,103 +36,95 @@ class MyWidget(QMainWindow):
         self.who - строка (""/ПК/У)
         self.path_of_pdf - куда сохранить pdf'''
 
+    def pdf_for_one_person(self,generator):
+        self.dormitory = self.radioButton.isChecked()
+        if self.lineEdit.text():
+            self.surname = self.lineEdit.text().capitalize()
+        if self.lineEdit_2.text():
+            self.name = self.lineEdit_2.text().capitalize()
+        if self.comboBox_2.currentText() == 'Обучающийся':
+            self.who = ""
+            st = Status.student
+        elif self.comboBox_2.currentText() == 'Слушатель ПК':
+            self.who = "ПК"
+            st = Status.prep_course_student
+        elif self.comboBox_2.currentText() == 'Участник мероприятия':
+            self.who = "У"
+            st = Status.participant
+        self.date = self.dateEdit.text()
+        person = Person(self.surname, self.name, datetime.strptime(self.date, '%d.%m.%Y'), st, self.dormitory, self.path_of_photo)
+        person.check()
+        generator.create_person(person)
+
+        generator.write(f'{self.path_of_pdf}/pdf_sample_1.pdf')
+
+    def pdf_from_csv(self,generator,parser):
+        if not self.path_of_file or not self.path_of_dir:
+            raise CustomException('Не хватает данных')
+        parser.parse_from_csv(self.path_of_file, self.path_of_dir)
+        generator.create_group(parser.get_person_list())
+        generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
+
+    def pdf_for_visitors(self,generator):
+        self.total_number = self.spinBox.value()  # кол-во пропусков
+        self.start_number = self.spinBox_2.value()  # начальный номер
+        generator.create_guests(self.start_number, self.total_number)
+        generator.write(f'{self.path_of_pdf}/pdf_sample_3.pdf')
+
+    def pdf_from_txt(self,generator,parser):
+        if not self.path_of_file or not self.path_of_dir:
+            raise CustomException('Не хватает данных')
+        parser.parse_from_txt(self.path_of_file, self.path_of_dir)
+        generator.create_group(parser.get_person_list())
+        generator.write(f'{self.path_of_pdf}/propusk.pdf')
+
+    def pdf_from_exe(self,generator,parser):
+        if not self.path_of_dir:
+            raise CustomException('Не хватает данных')
+        parser.parse_from_table(self.table, self.path_of_dir)
+        generator.create_group(parser.get_person_list())
+        generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
+
     def make_pdf(self):
-        if self.ok():
-            self.path_of_pdf = QFileDialog.getExistingDirectory(self, "Выбрать папку, куда сохранить pdf", ".")
-            try:
-                generator = GenPdf()
-                parser = Parser()
-                if self.mode == 1:  # генерация пропуска для 1 человека
-                    if not self.who:
-                        st = Status.student
-                    elif self.who == 'ПК':
-                        st = Status.prep_course_student
-                    else:
-                        st = Status.participant
-                    generator.create_person(
-                        Person(self.surname, self.name, datetime.strptime(self.date, '%d.%m.%Y'), st, self.dormitory,
-                               self.path_of_photo))
-                    generator.write(f'{self.path_of_pdf}/pdf_sample_1.pdf')
+        self.path_of_pdf = QFileDialog.getExistingDirectory(self, "Выбрать папку, куда сохранить pdf", ".")
+        try:
+            generator = GenPdf()
+            parser = Parser()
+            if self.mode == 1:  # генерация пропуска для 1 человека
+                self.pdf_for_one_person(generator)
 
-                elif self.mode == 2:  # генерация пропусков для многих из csv
-                    parser.parse_from_csv(self.path_of_file, self.path_of_dir)
-                    generator.create_group(parser.get_person_list())
-                    generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
+            elif self.mode == 2:  # генерация пропусков для многих из csv
+                self.pdf_from_csv(generator,parser)
 
-                elif self.mode == 3:  # генерация пропусков для посетителей
-                    self.total_number = self.spinBox.value()  # кол-во пропусков(int)
-                    self.start_number = self.spinBox_2.value()  # начальный номер (int)
-                    generator.create_guests(self.start_number, self.total_number)
-                    generator.write(f'{self.path_of_pdf}/pdf_sample_3.pdf')
+            elif self.mode == 3:  # генерация пропусков для посетителей
+                self.pdf_for_visitors(generator)
 
-                elif self.mode == 4:  # для многих из txt
-                    parser.parse_from_txt(self.path_of_file, self.path_of_dir)
-                    generator.create_group(parser.get_person_list())
-                    generator.write(f'{self.path_of_pdf}/propusk.pdf')
-                    self.label_7.move(465, 600)
+            elif self.mode == 4:  # для многих из txt
+                self.pdf_from_txt(generator,parser)
 
-                elif self.mode == 5:  # для многих из програмки
-                    try:
-                        parser.parse_from_table(self.table, self.path_of_dir)
-                        generator.create_group(parser.get_person_list())
-                        generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
-                    except Exception as er:
-                        self.label_7.setText(er)
+            elif self.mode == 5:  # для многих из програмки
+                self.pdf_from_exe(generator,parser)
 
-            except Exception as er:
-                self.label_7.setText('Что-то пошло не так')
-                print(str(er))
+        except Exception as er:
+            if isinstance(er,CustomException): # Печатаем ошибку, если она кастомная
+                self.show_error(str(er))
             else:
-                self.label_7.setText('Успешно')
-                self.label_7.move(465,600)
-                self.clear()
-            self.label_7.show()
+                self.show_error(str('Что-то пошло не так')) # иначе просто дружелюбно пишем
+            print((str(er)))
+            return
 
-    def ok(self):  # чекер
+        self.clear()
+        self.label_7.show()
+
+    def show_error(self, text):
         self.label_7.hide()
-        self.label_7.move(420, 600)
-        if self.mode == 1:
-            if self.radioButton.isChecked():
-                self.dormitory = True
-            elif self.radioButton_2.isChecked():
-                self.dormitory = False
-            if self.lineEdit.text() and self.lineEdit.text() != 'Фамилия':
-                self.surname = self.lineEdit.text().capitalize()
-            if self.lineEdit_2.text() and self.lineEdit_2.text() != 'Имя':
-                self.name = self.lineEdit_2.text().capitalize()
-            if self.comboBox_2.currentText() == 'Обучающийся':
-                self.who = ""
-            elif self.comboBox_2.currentText() == 'Слушатель ПК':
-                self.who = "ПК"
-            elif self.comboBox_2.currentText() == 'Участник мероприятия':
-                self.who = "У"
-            self.date = self.dateEdit.text()
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Critical)
+        msg.setText("Error")
+        msg.setInformativeText(text)
+        msg.setWindowTitle("Error")
+        msg.exec_()
 
-            for i in [self.dormitory, self.name, self.surname,
-                      self.path_of_photo]:  # Проверяем, все ли переменные имеют значение !None
-                if i is None:
-                    self.label_7.setText('Не хватает данных')
-                    self.label_7.show()
-                    return False
-            if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[
-                                                                      -4:]:  # вдруг, фото не jpg (но может и не надо такое)
-                self.label_7.setText('Неверный формат\nфото')
-                self.label_7.show()
-                return False
-
-            if datetime.strptime(self.date,
-                                 '%d.%m.%Y') <= datetime.now():  # срок окончания действия пропуска уже прошел
-                self.label_7.setText('Неверная дата')
-                self.label_7.move(440,600)
-                self.label_7.show()
-                return False
-
-        elif self.mode == 4:
-            if (not self.path_of_dir) or (not self.path_of_file):
-                self.label_7.setText('Не хватает данных')
-                self.label_7.show()
-                return False
-        return True
 
     def choose_photo(self):  # сохраняем путь до фото
         if self.comboBox.currentText() == 'Нескольким людям':
@@ -140,28 +132,33 @@ class MyWidget(QMainWindow):
         else:
             self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '')[0]
 
+
     def choose_file(self):
         self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
+
 
     def from_csv(self):
         self.hide_everything()
         self.mode = 2
-        self.pushButton_2.setText('Выбрать папку')
-        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4,self.pushButton_6])
+        self.pushButton_2.setText('Выбрать папку c фото')
+        self.pushButton_6.setText('Выбрать файл csv')
+        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6,self.pushButton_7])
+
 
     def from_txt(self):
         self.hide_everything()
         self.mode = 4
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл txt')
-        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6])
+        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6,self.pushButton_7])
+
 
     def from_exe(self):
         self.hide_everything()
         self.mode = 5
-        self.show_widgets([self.pushButton,self.pushButton_2])
+        self.show_widgets([self.pushButton, self.pushButton_2,self.pushButton_7])
 
-        self.pushButton_2.move(430,480)
+        self.pushButton_2.move(430, 480)
 
         self.table = QTableWidget(self)
         self.table.resize(561, 300)
@@ -170,15 +167,18 @@ class MyWidget(QMainWindow):
         self.table.show()
         self.table.setColumnCount(5)
         self.table.setRowCount(100)
+        for row in range(100):
+            for col in range(5):
+                self.table.setItem(row, col, QTableWidgetItem(''))
 
-
-        a = ['фамилия', 'имя', 'дата', 'статус (пк/ум/об)', 'общага (д/н)']
+        a = ['Фамилия', 'Имя', 'Дата (д.м.г)', 'Статус (пк/ум/об)', 'Общежитие (д/н)']
         for i in range(len(a)):
             self.table.setHorizontalHeaderItem(i, QTableWidgetItem(a[i]))
 
+
     def choose_mode(self):  # В зависимости от "режима" показываем определенные виджеты
         self.hide_everything()
-        self.clear()
+        self.pushButton_2.move(430, 420)
         if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
             self.pushButton_2.setText('Выбрать фото')
@@ -193,15 +193,17 @@ class MyWidget(QMainWindow):
             self.mode = 3
             self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton])
 
+
     def show_widgets(self, widgets):
         for i in widgets:
             i.show()
+
 
     def hide_everything(self):
         all_widgets = [self.dateEdit, self.spinBox, self.spinBox_2, self.radioButton, self.radioButton_2,
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
                        self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
-                       self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6]
+                       self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6,self.pushButton_7]
         for i in all_widgets:
             i.hide()
         try:
@@ -209,19 +211,25 @@ class MyWidget(QMainWindow):
         except Exception:
             pass
 
+
     def clear(self):
-        self.dormitory, self.path_of_photo, self.name, self.surname, self.date, self.who, self.path_of_dir, self.path_of_pdf = None, None, None, None, None, None, None, None
+        self.dormitory, self.path_of_photo, self.name, self.surname, self.date, self.who, self.path_of_dir, self.path_of_pdf,self.path_of_file = None,None, None, None, None, None, None, None, None
         self.lineEdit.setText('')
         self.lineEdit_2.setText('')
         self.dateEdit.setDate(datetime.now())
-        self.pushButton_2.move(430, 420)
+
+        try:
+            self.table.clear()
+            self.from_exe()
+        except Exception:
+            pass
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MyWidget()
+    ex = MainWindow()
     ex.setStyleSheet(
-        'background-image: url("background.jpg");background-repeat: no-repeat; background-position: center;')
+        'background-image: url("src/background.jpg");background-repeat: no-repeat; background-position: center;')
     ex.setFixedSize(972, 690)
     ex.show()
     sys.exit(app.exec_())
