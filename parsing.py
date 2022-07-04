@@ -11,23 +11,23 @@ class Parser:
         self.plist = []  # список с людьми
 
         # словарь(и) терминов (буквально)
-        # наши придуманные форматы в txt/csv/таблице отличаются друг от друга, поэтому мне подумалось, что так будет удобнее
+        # наши придуманные форматы в txt/csv/таблице отличаются друг от друга, поэтому мне подумалось
+        # что так будет удобнее
 
-        # информацию о формате данных смотреть, не знаю, где ( на момент разработки она еще не опубликована:) )
-        # возможно, в readme, но точно не тут
+        # информацию о формате данных смотреть в readme.md
         __txt_terms = {
-            'status_student': 'об',
+            'status_student': '',
             'status_participant': 'ум',
             'status_prep_course_student': 'пк',
-            'dorm_yes': '',
-            'dorm_no': 'общ'
+            'dorm_yes': 'общ',
+            'dorm_no': ''
         }
         __csv_terms = {
             'status_student': '',
             'status_participant': 'У',
             'status_prep_course_student': 'ПК',
-            'dorm_yes': '',
-            'dorm_no': 'общ'
+            'dorm_yes': 'общ',
+            'dorm_no': ''
         }
         __table_terms = {
             'status_student': 'об',
@@ -44,7 +44,8 @@ class Parser:
         """
         self.plist = []
 
-    def __check_n_get_person(self, cur_terms: str, photos_dir: str, surname: str, name: str, expired: str, status: str, dorm: str) -> Person:
+    def __check_n_get_person(self, cur_terms: str, photos_dir: str, surname: str, name: str, expired: str,
+                             status: str, dorm: str) -> Person:
         """
         из названия понятно, что этот метод проверяет данные, и если они корректны, то возвращает объект Person
         cur_terms может быть одним из следующих значений: 'txt', 'csv', 'table'
@@ -97,14 +98,16 @@ class Parser:
             person.dorm = False
         else:
             self.clear()
-            raise CustomException(f'Факт проживания в общежитии для {_full_name_for_exceptions} введен неправильно: {dorm}')
+            raise CustomException(f'Факт проживания в общежитии для {_full_name_for_exceptions} '
+                                  f'введен неправильно: {dorm}')
 
         _path_to_photo = photos_dir + os.sep + f'{person.surname}_{person.name}.jpg'
         if os.path.exists(_path_to_photo):
             person.photo = _path_to_photo
         else:
             self.clear()
-            raise CustomException(f'Нет фотографии для {_full_name_for_exceptions}. Возможно, она есть, только подписана неправильно :)')
+            raise CustomException(f'Нет фотографии для {_full_name_for_exceptions}. Возможно, она есть, '
+                                  f'только подписана неправильно :)')
 
         return person
 
@@ -114,11 +117,29 @@ class Parser:
         """
         with open(txt_fname, 'r', encoding='utf-8') as file:
             for line in file.readlines():
-                _surname, _name, _expired, _status, *_dorm = line.split()
-                # т.к. формат подразумевает необязательный флаг - "общ", то приходится его через звездочку читать
-                # поэтому _dorm является листом, который надо в str преобразовать путем взятия первого элемента
-                # или понять, что там ничего нет и присвоить пустую строку
-                _dorm = _dorm[0] if _dorm else ''
+                if line == '':
+                    continue
+                try:
+                    _surname, _name, _expired, *_flags = line.split()
+                except ValueError:
+                    raise CustomException('Слишком мало параметров для неизвестно кого, '
+                                          'поэтому и неизвестно для кого слишком мало параметров')
+                # формат подразумевает необязательные флаги для общаги и статуса, поэтому приходится их отдельно парсить
+                # т.к. основная функция проверки не предусмотрена для этого
+                if len(_flags) == 0:
+                    _status = ''
+                    _dorm = ''
+                elif len(_flags) == 1:
+                    if _flags[0] == self.terms['txt']['dorm_yes']:
+                        _status = ''
+                        _dorm = _flags[0]
+                    else:
+                        _status = _flags[0]
+                        _dorm = ''
+                elif len(_flags) == 2:
+                    _status, _dorm = _flags
+                else:
+                    raise CustomException(f'Для {_surname + " " + _name} слишком много параметров')
                 person = self.__check_n_get_person('txt', photos_dir, _surname, _name, _expired, _status, _dorm)
                 self.plist.append(person)
 
