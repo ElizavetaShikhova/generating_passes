@@ -8,6 +8,8 @@ from genpdf import GenPdf
 from person import Person, Status
 from exception import CustomException
 
+import os.path
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -51,6 +53,16 @@ class MainWindow(QMainWindow):
         if self.date <= datetime.now():  # не прошел ли срок окончания действия пропуска
             raise CustomException('Неверная дата')
 
+    def make_file_name(self):
+        """
+        Создадим уникальное имя для pdf, чтобы ничего не перезаписать случайно
+        """
+        c = 1
+        while os.path.exists(f'{self.path_of_pdf}/propusk_{c}.pdf'):
+            c += 1
+        return f'{self.path_of_pdf}/propusk_{c}.pdf'
+
+
     def pdf_for_one_person(self, generator):
         """
         Генерация pdf для 1 человека
@@ -67,7 +79,7 @@ class MainWindow(QMainWindow):
         self.date = datetime.strptime(self.dateEdit.text(), '%d.%m.%Y')
         self.check()
         generator.create_person(Person(self.surname, self.name, self.date, st, self.dormitory, self.path_of_photo))
-        generator.write(f'{self.path_of_pdf}/pdf_sample_1.pdf')
+        generator.write(f'{self.path_of_pdf}/{self.surname}_{self.name}.pdf')
 
     def pdf_from_csv(self, generator, parser):
         """
@@ -77,7 +89,7 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_csv(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
+        generator.write(self.make_file_name())
 
     def pdf_for_visitors(self, generator):
         """
@@ -86,7 +98,7 @@ class MainWindow(QMainWindow):
         self.total_number = self.spinBox.value()  # кол-во пропусков
         self.start_number = self.spinBox_2.value()  # начальный номер
         generator.create_guests(self.start_number, self.total_number)
-        generator.write(f'{self.path_of_pdf}/pdf_sample_3.pdf')
+        generator.write(self.make_file_name())
 
     def pdf_from_txt(self, generator, parser):
         """
@@ -96,7 +108,7 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_txt(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(f'{self.path_of_pdf}/propusk.pdf')
+        generator.write(self.make_file_name())
 
     def pdf_from_exe(self, generator, parser):
         """
@@ -106,7 +118,7 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_table(self.table, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(f'{self.path_of_pdf}/pdf_sample_2.pdf')
+        generator.write(self.make_file_name())
 
     def make_pdf(self):
         """
@@ -137,6 +149,7 @@ class MainWindow(QMainWindow):
             else:
                 self.show_error(str(CustomException()))  # иначе просто дружелюбно пишем :)
             print((str(er)))
+            return
 
         self.clear()
         self.label_7.show()
@@ -178,7 +191,10 @@ class MainWindow(QMainWindow):
 У для участника мероприятия, тоже большими буквами
 4. Факт проживания в общежитии. Пустое поле (то есть две ; подряд),
 если человек не будет там проживать, общ если будет
-5. Дата окончания действия пропуска в формате дд.мм.гггг""")
+5. Дата окончания действия пропуска в формате дд.мм.гггг
+
+Название каждой фотографии, которая лежит в этой папке, должно
+соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7,self.label_8])
 
     def from_txt(self):
@@ -193,14 +209,15 @@ class MainWindow(QMainWindow):
 1. Фамилия
 2. Имя
 3. Дата окончания действия пропуска в формате дд.мм.гггг
-4. Статус: ничего не вписывайте для обучающегося,
-ум для участника мероприятия, пк для слушателя 
-подготовительных курсов. 
+4. Статус: ничего не вписывайте для обучающегося, ум для участника
+ мероприятия, пк для слушателя подготовительных курсов. 
 5. Если человечек будет жить в общежитии, то общ,
- в ином случае ничего не пишите
+ в ином случаеничего не пишите
  
 Все параметры пишите через пробел и без кавычек,
- а каждого человека описывайте в отдельной строке.""")
+а каждого человека описывайте в отдельной строке.
+Название каждой фотографии, которая лежит в этой папке,
+должно соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7,self.label_8])
 
     def from_exe(self):

@@ -24,8 +24,8 @@ class Parser:
         }
         __csv_terms = {
             'status_student': '',
-            'status_participant': 'У',
-            'status_prep_course_student': 'ПК',
+            'status_participant': 'у',
+            'status_prep_course_student': 'пк',
             'dorm_yes': 'общ',
             'dorm_no': ''
         }
@@ -78,7 +78,7 @@ class Parser:
             raise CustomException(f'Дата окончания срока действия пропуска для '
                                   f'{_full_name_for_exceptions} введена неправильно: {expired}')
 
-        if datetime.now() <= person.expired:
+        if person.expired <= datetime.now():
             raise CustomException(f'Осторожно! {_full_name_for_exceptions} - это путешественник во времени!'
                                   f'Дата окончания действия пропуска уже прошла!')
 
