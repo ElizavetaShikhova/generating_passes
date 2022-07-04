@@ -77,6 +77,10 @@ class Parser:
             raise CustomException(f'Дата окончания срока действия пропуска для '
                                   f'{_full_name_for_exceptions} введена неправильно: {expired}')
 
+        if datetime.now() <= person.expired:
+            raise CustomException(f'Осторожно! {_full_name_for_exceptions} - это путешественник во времени!'
+                                  f'Дата окончания действия пропуска уже прошла!')
+
         if status == self.terms[cur_terms]['status_student']:
             person.status = Status.student
         elif status == self.terms[cur_terms]['status_participant']:
