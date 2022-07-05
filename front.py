@@ -53,16 +53,6 @@ class MainWindow(QMainWindow):
         if self.date <= datetime.now():  # не прошел ли срок окончания действия пропуска
             raise CustomException('Неверная дата')
 
-    def make_file_name(self):
-        """
-        Создадим уникальное имя для pdf, чтобы ничего не перезаписать случайно
-        """
-        c = 1
-        while os.path.exists(f'{self.path_of_pdf}/propusk_{c}.pdf'):
-            c += 1
-        return f'{self.path_of_pdf}/propusk_{c}.pdf'
-
-
     def pdf_for_one_person(self, generator):
         """
         Генерация pdf для 1 человека
@@ -79,7 +69,7 @@ class MainWindow(QMainWindow):
         self.date = datetime.strptime(self.dateEdit.text(), '%d.%m.%Y')
         self.check()
         generator.create_person(Person(self.surname, self.name, self.date, st, self.dormitory, self.path_of_photo))
-        generator.write(f'{self.path_of_pdf}/{self.surname}_{self.name}.pdf')
+        generator.write(self.path_of_pdf)
 
     def pdf_from_csv(self, generator, parser):
         """
@@ -89,7 +79,7 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_csv(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.make_file_name())
+        generator.write(self.path_of_pdf)
 
     def pdf_for_visitors(self, generator):
         """
@@ -98,7 +88,7 @@ class MainWindow(QMainWindow):
         self.total_number = self.spinBox.value()  # кол-во пропусков
         self.start_number = self.spinBox_2.value()  # начальный номер
         generator.create_guests(self.start_number, self.total_number)
-        generator.write(self.make_file_name())
+        generator.write(self.path_of_pdf)
 
     def pdf_from_txt(self, generator, parser):
         """
@@ -108,7 +98,7 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_txt(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.make_file_name())
+        generator.write(self.path_of_pdf)
 
     def pdf_from_exe(self, generator, parser):
         """
@@ -118,41 +108,41 @@ class MainWindow(QMainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_table(self.table, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.make_file_name())
+        generator.write(self.path_of_pdf)
 
     def make_pdf(self):
         """
         Функция для кнопки генерации пропусков
         """
-        self.path_of_pdf = QFileDialog.getExistingDirectory(self, "Выбрать папку, куда сохранить pdf", ".")
         try:
-            generator = GenPdf()
-            parser = Parser()
-            if self.mode == 1:  # генерация пропуска для 1 человека
-                self.pdf_for_one_person(generator)
+            self.path_of_pdf  = QFileDialog.getSaveFileName(self,self.tr("Сохранить файл"), f"/propusk",
+                                                       self.tr("PDF files (*.pdf)"))[0]
+            if self.path_of_pdf:
+                generator = GenPdf()
+                parser = Parser()
+                if self.mode == 1:  # генерация пропуска для 1 человека
+                    self.pdf_for_one_person(generator)
 
-            elif self.mode == 2:  # генерация пропусков для многих из csv
-                self.pdf_from_csv(generator, parser)
+                elif self.mode == 2:  # генерация пропусков для многих из csv
+                    self.pdf_from_csv(generator, parser)
 
-            elif self.mode == 3:  # генерация пропусков для посетителей
-                self.pdf_for_visitors(generator)
+                elif self.mode == 3:  # генерация пропусков для посетителей
+                    self.pdf_for_visitors(generator)
 
-            elif self.mode == 4:  # для многих из txt
-                self.pdf_from_txt(generator, parser)
+                elif self.mode == 4:  # для многих из txt
+                    self.pdf_from_txt(generator, parser)
 
-            elif self.mode == 5:  # для многих из таблицы
-                self.pdf_from_exe(generator, parser)
+                elif self.mode == 5:  # для многих из таблицы
+                    self.pdf_from_exe(generator, parser)
+
+                self.clear()
+                self.label_7.show() #Скажем, что все получилось
 
         except Exception as er:
             if isinstance(er, CustomException):  # Печатаем ошибку, если она кастомная
                 self.show_error(str(er))
             else:
                 self.show_error(str(CustomException()))  # иначе просто дружелюбно пишем :)
-            print((str(er)))
-            return
-
-        self.clear()
-        self.label_7.show()
 
     def show_error(self, text):
         """
@@ -212,7 +202,7 @@ class MainWindow(QMainWindow):
 4. Статус: ничего не вписывайте для обучающегося, ум для участника
  мероприятия, пк для слушателя подготовительных курсов. 
 5. Если человечек будет жить в общежитии, то общ,
- в ином случаеничего не пишите
+ в ином случае ничего не пишите
  
 Все параметры пишите через пробел и без кавычек,
 а каждого человека описывайте в отдельной строке.
