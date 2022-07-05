@@ -468,8 +468,7 @@
      <string notr="true">background:rgb(49, 45, 32);color:rgb(255,255,255);</string>
     </property>
     <property name="text">
-     <string>Таблцей внутри
-приложения</string>
+     <string>Таблицей внутри приложения</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton_6">
