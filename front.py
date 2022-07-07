@@ -1,20 +1,18 @@
 from datetime import datetime
 
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QTableWidget, QTableWidgetItem, QMessageBox
+from PyQt5.QtWidgets import QFileDialog, QTableWidget, QTableWidgetItem, QMessageBox
 
 from parsing import Parser
 from genpdf import GenPdf
 from person import Person, Status
 from exception import CustomException
+from src.window import Ui_MainWindow
 
-import os.path
 
-
-class MainWindow(QMainWindow):
+class MainWindow(Ui_MainWindow):
     def __init__(self):
         super().__init__()
-        uic.loadUi('src/window.ui', self)
+        super().setupUi(self)
         self.hide_everything()
         self.comboBox.currentIndexChanged.connect(self.choose_mode)
         self.pushButton_2.clicked.connect(self.choose_photo)
@@ -217,8 +215,6 @@ class MainWindow(QMainWindow):
         self.hide_everything()
         self.mode = 5
         self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7])
-
-        self.pushButton_2.move(430, 480)
 
         self.table = QTableWidget(self)
         self.table.resize(561, 300)

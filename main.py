@@ -5,7 +5,7 @@ from front import MainWindow
 app = QApplication(sys.argv)
 ex = MainWindow()
 ex.setStyleSheet(
-    'background-image: url("src/background.jpg");background-repeat: no-repeat; background-position: center;')
-ex.setFixedSize(972, 690)
+    'background-image: url("src/background1.jpg");background-repeat: no-repeat; background-position: center;')
+ex.setFixedSize(972, 600)
 ex.show()
 sys.exit(app.exec_())
