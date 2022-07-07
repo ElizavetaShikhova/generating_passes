@@ -169,6 +169,7 @@ class MainWindow(Ui_MainWindow):
         """
         self.hide_everything()
         self.mode = 2
+        self.pushButton_2.move(398, 420)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл csv')
         self.label_4.setText("""
@@ -191,6 +192,7 @@ class MainWindow(Ui_MainWindow):
         """
         self.hide_everything()
         self.mode = 4
+        self.pushButton_2.move(398, 420)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл txt')
         self.label_4.setText("""
@@ -223,6 +225,8 @@ class MainWindow(Ui_MainWindow):
         self.table.show()
         self.table.setColumnCount(5)
         self.table.setRowCount(100)
+
+        self.pushButton_2.move(398,480)
         for row in range(100):
             for col in range(5):
                 self.table.setItem(row, col, QTableWidgetItem(''))
@@ -236,9 +240,9 @@ class MainWindow(Ui_MainWindow):
         Функция для выбора режима
         """
         self.hide_everything()
-        self.pushButton_2.move(430, 420)
         if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
+            self.pushButton_2.move(398, 420)
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
@@ -273,7 +277,7 @@ class MainWindow(Ui_MainWindow):
         self.lineEdit.setText('')
         self.lineEdit_2.setText('')
         self.dateEdit.setDate(datetime.now())
-
+        self.pushButton_2.move(398,420)
         try:
             self.table.clear()
             self.from_exe()
