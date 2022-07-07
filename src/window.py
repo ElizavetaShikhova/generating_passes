@@ -130,7 +130,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.label_6.setObjectName("label_6")
 
         self.spinBox_2 = QtWidgets.QSpinBox(self.centralwidget)
-        self.spinBox_2.setGeometry(QtCore.QRect(445, 280, 102, 22))
+        self.spinBox_2.setGeometry(QtCore.QRect(435, 280, 102, 22))
         self.spinBox_2.setFont(font16)
         self.spinBox_2.setObjectName("spinBox_2")
 
