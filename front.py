@@ -1,6 +1,7 @@
 from datetime import datetime
 
-from PyQt5.QtWidgets import QFileDialog, QTableWidget, QTableWidgetItem, QMessageBox
+from PyQt5.QtGui import QPalette, QBrush, QPixmap
+from PyQt5.QtWidgets import QFileDialog, QTableWidget, QTableWidgetItem, QMessageBox, QHeaderView
 
 from parsing import Parser
 from genpdf import GenPdf
@@ -113,8 +114,8 @@ class MainWindow(Ui_MainWindow):
         Функция для кнопки генерации пропусков
         """
         try:
-            self.path_of_pdf  = QFileDialog.getSaveFileName(self,self.tr("Сохранить файл"), f"/propusk",
-                                                       self.tr("PDF files (*.pdf)"))[0]
+            self.path_of_pdf = QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
+                                                           self.tr("PDF files (*.pdf)"))[0]
             if self.path_of_pdf:
                 generator = GenPdf()
                 parser = Parser()
@@ -134,7 +135,7 @@ class MainWindow(Ui_MainWindow):
                     self.pdf_from_exe(generator, parser)
 
                 self.clear()
-                self.label_7.show() #Скажем, что все получилось
+                self.label_7.show()  # Скажем, что все получилось
 
         except Exception as er:
             if isinstance(er, CustomException):  # Печатаем ошибку, если она кастомная
@@ -184,7 +185,8 @@ class MainWindow(Ui_MainWindow):
 
 Название каждой фотографии, которая лежит в этой папке, должно
 соответствовать формату Фамилия_Имя.jpg""")
-        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7,self.label_8])
+        self.show_widgets(
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8])
 
     def from_txt(self):
         """
@@ -208,7 +210,8 @@ class MainWindow(Ui_MainWindow):
 а каждого человека описывайте в отдельной строке.
 Название каждой фотографии, которая лежит в этой папке,
 должно соответствовать формату Фамилия_Имя.jpg""")
-        self.show_widgets([self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7,self.label_8])
+        self.show_widgets(
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8])
 
     def from_exe(self):
         """
@@ -217,29 +220,34 @@ class MainWindow(Ui_MainWindow):
         self.hide_everything()
         self.mode = 5
         self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7])
+        self.set_background('src/background2.jpeg')
 
         self.table = QTableWidget(self)
-        self.table.resize(561, 300)
-        self.table.move(210, 165)
+        self.table.resize(636, 300)
+        self.table.move(168, 160)
+
         self.table.setStyleSheet('background:rgb(255, 255, 255)')
         self.table.show()
         self.table.setColumnCount(5)
         self.table.setRowCount(100)
 
-        self.pushButton_2.move(398,480)
+        self.pushButton_2.move(398, 480)
         for row in range(100):
             for col in range(5):
                 self.table.setItem(row, col, QTableWidgetItem(''))
 
         columns = ['Фамилия', 'Имя', 'Дата (дд.мм.гггг)', 'Статус (пк/ум/об)', 'Общежитие (д/н)']
+        header = self.table.horizontalHeader()
         for i in range(len(columns)):
             self.table.setHorizontalHeaderItem(i, QTableWidgetItem(columns[i]))
+            header.setSectionResizeMode(i, QHeaderView.Stretch)
 
     def choose_mode(self):
         """
         Функция для выбора режима
         """
         self.hide_everything()
+        self.set_background('src/background1.jpg')
         if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
             self.pushButton_2.move(398, 420)
@@ -264,7 +272,7 @@ class MainWindow(Ui_MainWindow):
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
                        self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
                        self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6,
-                       self.pushButton_7,self.label_8]
+                       self.pushButton_7, self.label_8]
         for i in all_widgets:
             i.hide()
         try:
@@ -277,9 +285,14 @@ class MainWindow(Ui_MainWindow):
         self.lineEdit.setText('')
         self.lineEdit_2.setText('')
         self.dateEdit.setDate(datetime.now())
-        self.pushButton_2.move(398,420)
+        self.pushButton_2.move(398, 420)
         try:
             self.table.clear()
             self.from_exe()
         except Exception:
             pass
+
+    def set_background(self, url):
+        palette = QPalette()
+        palette.setBrush(QPalette.Background, QBrush(QPixmap(url)))
+        self.setPalette(palette)
