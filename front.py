@@ -43,7 +43,7 @@ class MainWindow(Ui_MainWindow):
 
         for i in [self.dormitory, self.name, self.surname,
                   self.path_of_photo]:  # Проверяем, все ли переменные имеют значение !None
-            if i is None:
+            if i is None or i == '':
                 raise CustomException('Не хватает данных')
 
         if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[-4:]:  # проверяем формат фото
@@ -52,23 +52,28 @@ class MainWindow(Ui_MainWindow):
         if self.date <= datetime.now():  # не прошел ли срок окончания действия пропуска
             raise CustomException('Неверная дата')
 
+    def preparing(self):
+        self.dormitory = self.radioButton.isChecked()
+        self.surname = self.lineEdit.text().capitalize()
+        self.name = self.lineEdit_2.text().capitalize()
+        self.date = datetime.strptime(self.dateEdit.text(), '%d.%m.%Y')
+        if self.comboBox_2.currentText() == 'Обучающийся':
+            self.st = Status.student
+        elif self.comboBox_2.currentText() == 'Слушатель ПК':
+            self.st = Status.prep_course_student
+        elif self.comboBox_2.currentText() == 'Участник мероприятия':
+            self.st = Status.participant
+
     def pdf_for_one_person(self, generator):
         """
         Генерация pdf для 1 человека
         """
-        self.dormitory = self.radioButton.isChecked()
-        self.surname = self.lineEdit.text().capitalize()
-        self.name = self.lineEdit_2.text().capitalize()
-        if self.comboBox_2.currentText() == 'Обучающийся':
-            st = Status.student
-        elif self.comboBox_2.currentText() == 'Слушатель ПК':
-            st = Status.prep_course_student
-        elif self.comboBox_2.currentText() == 'Участник мероприятия':
-            st = Status.participant
-        self.date = datetime.strptime(self.dateEdit.text(), '%d.%m.%Y')
+        self.preparing()
         self.check()
-        generator.create_person(Person(self.surname, self.name, self.date, st, self.dormitory, self.path_of_photo))
-        generator.write(self.path_of_pdf)
+        generator.create_person(Person(self.surname, self.name, self.date, self.st, self.dormitory, self.path_of_photo))
+        self.path_of_pdf = self.choose_save_path()
+        if self.path_of_pdf:
+            generator.write(self.path_of_pdf)
 
     def pdf_from_csv(self, generator, parser):
         """
@@ -78,7 +83,9 @@ class MainWindow(Ui_MainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_csv(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.path_of_pdf)
+        self.path_of_pdf = self.choose_save_path()
+        if self.path_of_pdf:
+            generator.write(self.path_of_pdf)
 
     def pdf_for_visitors(self, generator):
         """
@@ -87,7 +94,9 @@ class MainWindow(Ui_MainWindow):
         self.total_number = self.spinBox.value()  # кол-во пропусков
         self.start_number = self.spinBox_2.value()  # начальный номер
         generator.create_guests(self.start_number, self.total_number)
-        generator.write(self.path_of_pdf)
+        self.path_of_pdf = self.choose_save_path()
+        if self.path_of_pdf:
+            generator.write(self.path_of_pdf)
 
     def pdf_from_txt(self, generator, parser):
         """
@@ -97,7 +106,9 @@ class MainWindow(Ui_MainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_txt(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.path_of_pdf)
+        self.path_of_pdf = self.choose_save_path()
+        if self.path_of_pdf:
+            generator.write(self.path_of_pdf)
 
     def pdf_from_exe(self, generator, parser):
         """
@@ -107,47 +118,53 @@ class MainWindow(Ui_MainWindow):
             raise CustomException('Не хватает данных')
         parser.parse_from_table(self.table, self.path_of_dir)
         generator.create_group(parser.get_person_list())
-        generator.write(self.path_of_pdf)
+        self.path_of_pdf = self.choose_save_path()
+        if self.path_of_pdf:
+            generator.write(self.path_of_pdf)
+
+    def choose_save_path(self):
+        return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
+                                           self.tr("PDF files (*.pdf)"))[0]
 
     def make_pdf(self):
         """
         Функция для кнопки генерации пропусков
         """
         try:
-            self.path_of_pdf = QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
-                                                           self.tr("PDF files (*.pdf)"))[0]
-            if self.path_of_pdf:
-                generator = GenPdf()
-                parser = Parser()
-                if self.mode == 1:  # генерация пропуска для 1 человека
-                    self.pdf_for_one_person(generator)
+            generator = GenPdf()
+            parser = Parser()
 
-                elif self.mode == 2:  # генерация пропусков для многих из csv
-                    self.pdf_from_csv(generator, parser)
+            if self.mode == 1:  # генерация пропуска для 1 человека
+                self.pdf_for_one_person(generator)
 
-                elif self.mode == 3:  # генерация пропусков для посетителей
-                    self.pdf_for_visitors(generator)
+            elif self.mode == 2:  # генерация пропусков для многих из csv
+                self.pdf_from_csv(generator, parser)
 
-                elif self.mode == 4:  # для многих из txt
-                    self.pdf_from_txt(generator, parser)
+            elif self.mode == 3:  # генерация пропусков для посетителей
+                self.pdf_for_visitors(generator)
 
-                elif self.mode == 5:  # для многих из таблицы
-                    self.pdf_from_exe(generator, parser)
+            elif self.mode == 4:  # для многих из txt
+                self.pdf_from_txt(generator, parser)
 
-                self.clear()
-                self.label_7.show()  # Скажем, что все получилось
+            elif self.mode == 5:  # для многих из таблицы
+                self.pdf_from_exe(generator, parser)
+
+            self.clear()
+            self.label_7.show()  # Скажем, что все получилось
 
         except Exception as er:
             if isinstance(er, CustomException):  # Печатаем ошибку, если она кастомная
                 self.show_error(str(er))
             else:
                 self.show_error(str(CustomException()))  # иначе просто дружелюбно пишем :)
+            print(str(er))
 
     def show_error(self, text):
         """
         Окошко с ошибками
         """
         self.label_7.hide()
+
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
         msg.setText("Error")
@@ -177,8 +194,8 @@ class MainWindow(Ui_MainWindow):
 1. Фамилия
 2. Имя
 3. Статус: пустое (то есть две ; подряд) поле для обучающего,
-ПК большими буквами для слушателя подготовительных курсов,
-У для участника мероприятия, тоже большими буквами
+"ПК" для слушателя подготовительных курсов,
+"У" для участника мероприятия, тоже большими буквами
 4. Факт проживания в общежитии. Пустое поле (то есть две ; подряд),
 если человек не будет там проживать, общ если будет
 5. Дата окончания действия пропуска в формате дд.мм.гггг
@@ -201,11 +218,11 @@ class MainWindow(Ui_MainWindow):
 1. Фамилия
 2. Имя
 3. Дата окончания действия пропуска в формате дд.мм.гггг
-4. Статус: ничего не вписывайте для обучающегося, ум для участника
- мероприятия, пк для слушателя подготовительных курсов. 
-5. Если человечек будет жить в общежитии, то общ,
+4. Статус: ничего не вписывайте для обучающегося, "ум" для участ-
+ ника мероприятия, "пк" для слушателя подготовительных курсов. 
+5. Если человечек будет жить в общежитии, то "общ",
  в ином случае ничего не пишите
- 
+
 Все параметры пишите через пробел и без кавычек,
 а каждого человека описывайте в отдельной строке.
 Название каждой фотографии, которая лежит в этой папке,
