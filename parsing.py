@@ -115,6 +115,10 @@ class Parser:
         """
         парсим человечков из txt файла и добавляем в self.plist
         """
+
+        if txt_fname[-3:] != 'txt':
+            raise CustomException('Неверное расширение файла')
+
         with open(txt_fname, 'r', encoding='utf-8') as file:
             for line in file.readlines():
                 if line == '':
@@ -147,6 +151,10 @@ class Parser:
         """
         парсим человечков из csv файла и добавляем в self.plist
         """
+
+        if csv_fname[-3:] != 'csv':
+            raise CustomException('Неверное расширение файла')
+
         with open(csv_fname, 'r', encoding='utf-8') as file:
             reader = csv.reader(file, delimiter=';')
             line_counter = 0
