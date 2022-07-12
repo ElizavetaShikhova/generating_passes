@@ -189,6 +189,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_7.setStyleSheet("background:rgb(225, 206, 147)")
         self.pushButton_7.setObjectName("pushButton_7")
 
+        self.label_9 = QtWidgets.QLabel(self.centralwidget)
+        self.label_9.setGeometry(QtCore.QRect(590, 407, 50, 50))
+        self.label_9.setText('✅')
+        font = QtGui.QFont()
+        font.setPixelSize(30)
+        font.setBold(True)
+        self.label_9.setFont(font)
+        self.label_9.setObjectName("label_9")
+
+        self.label_10 = QtWidgets.QLabel(self.centralwidget)
+        self.label_10.setGeometry(QtCore.QRect(590, 467, 50, 50))
+        self.label_10.setText('✅')
+        self.label_10.setFont(font)
+        self.label_10.setObjectName("label_10")
+
         self.label_8 = QtWidgets.QLabel(self.centralwidget)
         self.label_8.setGeometry(QtCore.QRect(340, 145, 292, 21))
         font = QtGui.QFont()

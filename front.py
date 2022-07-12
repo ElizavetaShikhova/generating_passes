@@ -47,6 +47,7 @@ class MainWindow(Ui_MainWindow):
                 raise CustomException('Не хватает данных')
 
         if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[-4:]:  # проверяем формат фото
+            self.label_9.hide()
             raise CustomException('Неверный формат фото')
 
         if self.date <= datetime.now():  # не прошел ли срок окончания действия пропуска
@@ -149,22 +150,26 @@ class MainWindow(Ui_MainWindow):
             elif self.mode == 5:  # для многих из таблицы
                 self.pdf_from_exe(generator, parser)
 
-            self.clear()
-            self.label_7.show()  # Скажем, что все получилось
+            if self.path_of_pdf:
+                self.clear()
+                self.label_7.show()  # Скажем, что все получилось
 
         except Exception as er:
+            if self.mode!=1:
+                self.label_9.hide()
+                self.label_10.hide()
             if isinstance(er, CustomException):  # Печатаем ошибку, если она кастомная
                 self.show_error(str(er))
             else:
                 self.show_error(str(CustomException()))  # иначе просто дружелюбно пишем :)
-            print(str(er))
 
     def show_error(self, text):
         """
         Окошко с ошибками
         """
         self.label_7.hide()
-
+        if not self.path_of_file:
+            self.label_10.hide()
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Critical)
         msg.setText("Error")
@@ -177,9 +182,13 @@ class MainWindow(Ui_MainWindow):
             self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
         else:
             self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '')[0]
+        if self.path_of_photo or self.path_of_dir:
+            self.label_9.show()
 
     def choose_file(self):
         self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
+        if self.path_of_file:
+            self.label_10.show()
 
     def from_csv(self):
         """
@@ -188,6 +197,7 @@ class MainWindow(Ui_MainWindow):
         self.hide_everything()
         self.mode = 2
         self.pushButton_2.move(398, 420)
+        self.label_9.move(590,407)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл csv')
         self.label_4.setText("""
@@ -212,6 +222,7 @@ class MainWindow(Ui_MainWindow):
         self.hide_everything()
         self.mode = 4
         self.pushButton_2.move(398, 420)
+        self.label_9.move(590,407)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл txt')
         self.label_4.setText("""
@@ -249,6 +260,7 @@ class MainWindow(Ui_MainWindow):
         self.table.setRowCount(100)
 
         self.pushButton_2.move(398, 480)
+        self.label_9.move(590,467)
         for row in range(100):
             for col in range(5):
                 self.table.setItem(row, col, QTableWidgetItem(''))
@@ -268,6 +280,7 @@ class MainWindow(Ui_MainWindow):
         if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
             self.pushButton_2.move(398, 420)
+            self.label_9.move(590,407)
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
@@ -289,7 +302,7 @@ class MainWindow(Ui_MainWindow):
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
                        self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
                        self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6,
-                       self.pushButton_7, self.label_8]
+                       self.pushButton_7, self.label_8,self.label_9,self.label_10]
         for i in all_widgets:
             i.hide()
         try:
@@ -303,6 +316,9 @@ class MainWindow(Ui_MainWindow):
         self.lineEdit_2.setText('')
         self.dateEdit.setDate(datetime.now())
         self.pushButton_2.move(398, 420)
+        self.label_9.move(590,407)
+        self.label_9.hide()
+        self.label_10.hide()
         try:
             self.table.clear()
             self.from_exe()
