@@ -149,7 +149,11 @@ class Parser:
         """
         with open(csv_fname, 'r', encoding='utf-8') as file:
             reader = csv.reader(file, delimiter=';')
+            line_counter = 0
             for line in reader:
+                line_counter += 1
+                if len(line) != 5:
+                    raise CustomException(f'Неверное число параметров в {line_counter} строке')
                 _surname, _name, _status, _dorm, _expired = line
                 person = self.__check_n_get_person('csv', photos_dir, _surname, _name, _expired, _status, _dorm)
                 self.plist.append(person)
