@@ -159,6 +159,8 @@ class Parser:
             reader = csv.reader(file, delimiter=';')
             line_counter = 0
             for line in reader:
+                if len(line) == 0:
+                    continue
                 line_counter += 1
                 if len(line) != 5:
                     raise CustomException(f'Неверное число параметров в {line_counter} строке')
