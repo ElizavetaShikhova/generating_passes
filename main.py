@@ -1,5 +1,8 @@
 import ctypes
-ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Liza_plus_Sasha_inc')
+import os
+
+if os.name == 'nt':
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Liza_plus_Sasha_inc')
 
 import sys
 from PyQt5.QtWidgets import QApplication
