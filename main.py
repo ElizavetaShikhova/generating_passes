@@ -3,8 +3,6 @@ import os
 
 if os.name == 'nt':
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Liza_plus_Sasha_inc')
-elif os.name == 'posix':
-    os.environ["QT_QPA_PLATFORM"] = "xcb"
 
 import sys
 from PyQt5.QtWidgets import QApplication
