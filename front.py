@@ -321,9 +321,11 @@ class MainWindow(Ui_MainWindow):
         self.label_10.hide()
         try:
             self.table.clear()
-            self.from_exe()
         except Exception:
             pass
+        if self.mode == 5:
+            self.from_exe()
+
 
     def set_background(self, url):
         palette = QPalette()
