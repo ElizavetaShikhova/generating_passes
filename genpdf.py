@@ -74,6 +74,8 @@ class GenPdf:
         # пишем грустные слова о том, когда придется покидать наш любимый СУНЦ УрФУ
         self.pdf.text(32, 45, f'Действительно по {person.expired.strftime("%d.%m.%Y")}')
 
+        self.pdf.rect(4.87, 13.87, 24.26, 32.26)  # это рамочка
+
         try:
             self.pdf.image(person.photo, 5, 14, 24, 32, type='JPG')
         except RuntimeError:
@@ -121,7 +123,7 @@ class GenPdf:
         # чтобы еще раз напечатать pdf-ку надо заново инициализировать экземпляр
         if self.already_written:
             raise CustomException('Этот экземпляр класса уже однажды выписал пропуска (дайте ему отдохнуть, он устал). '
-                            'Чтобы еще раз написать pdf, надо переинициализировать его')
+                                  'Чтобы еще раз написать pdf, надо переинициализировать его')
         self.pdf.output(output_file)
         self.already_written = True
 
