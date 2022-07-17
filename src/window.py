@@ -46,7 +46,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lineEdit.setEnabled(True)
         self.lineEdit.setGeometry(QtCore.QRect(361, 150, 250, 31))
         self.lineEdit.setFont(font16)
-        self.lineEdit.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.lineEdit.setFocusPolicy(QtCore.Qt.TabFocus)
         self.lineEdit.setAcceptDrops(True)
         self.lineEdit.setStyleSheet("border: 1px solid black")
         self.lineEdit.setText("")
@@ -55,7 +55,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
         self.lineEdit_2.setGeometry(QtCore.QRect(361, 190, 250, 31))
         self.lineEdit_2.setFont(font16)
-        self.lineEdit_2.setFocusPolicy(QtCore.Qt.ClickFocus)
+        self.lineEdit_2.setFocusPolicy(QtCore.Qt.TabFocus)
         self.lineEdit_2.setStyleSheet("border: 1px solid black")
         self.lineEdit_2.setText("")
         self.lineEdit_2.setClearButtonEnabled(False)
@@ -64,7 +64,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.comboBox_2 = QtWidgets.QComboBox(self.centralwidget)
         self.comboBox_2.setGeometry(QtCore.QRect(361, 240, 250, 28))
         self.comboBox_2.setFont(font16)
-        self.comboBox_2.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.comboBox_2.setFocusPolicy(QtCore.Qt.TabFocus)
         self.comboBox_2.setObjectName("comboBox_2")
         self.comboBox_2.addItem("")
         self.comboBox_2.addItem("")
@@ -72,11 +72,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.radioButton = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton.setGeometry(QtCore.QRect(373, 280, 226, 17))
+        self.radioButton.setFocusPolicy(QtCore.Qt.TabFocus)
         self.radioButton.setFont(font16)
         self.radioButton.setObjectName("radioButton")
 
         self.radioButton_2 = QtWidgets.QRadioButton(self.centralwidget)
         self.radioButton_2.setGeometry(QtCore.QRect(373, 310, 226, 17))
+        self.radioButton_2.setFocusPolicy(QtCore.Qt.TabFocus)
         self.radioButton_2.setFont(font16)
         self.radioButton_2.setObjectName("radioButton_2")
 
@@ -88,8 +90,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.label_3.setGeometry(QtCore.QRect(351, 460, 271, 21))
         self.label_3.setObjectName("label_3")
 
+        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_2.setGeometry(QtCore.QRect(398, 420, 176, 31))
+        self.pushButton_2.setFocusPolicy(QtCore.Qt.TabFocus)
+        font = QtGui.QFont()
+        font.setPixelSize(17)
+        self.pushButton_2.setFont(font)
+        self.pushButton_2.setStyleSheet("background:rgb(49, 45, 32);color:rgb(255,255,255);")
+        self.pushButton_2.setObjectName("pushButton")
+
         self.dateEdit = QtWidgets.QDateEdit(self.centralwidget)
         self.dateEdit.setGeometry(QtCore.QRect(359, 500, 251, 22))
+        self.dateEdit.setFocusPolicy(QtCore.Qt.TabFocus)
         font = QtGui.QFont()
         font.setPixelSize(15)
         self.dateEdit.setFont(font)
@@ -97,6 +109,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton.setGeometry(QtCore.QRect(370, 540, 232, 41))
+        self.pushButton.setFocusPolicy(QtCore.Qt.TabFocus)
         font = QtGui.QFont()
         font.setPixelSize(19)
         self.pushButton.setFont(font)
@@ -133,14 +146,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBox_2.setGeometry(QtCore.QRect(435, 280, 102, 22))
         self.spinBox_2.setFont(font16)
         self.spinBox_2.setObjectName("spinBox_2")
-
-        self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(398, 420, 176, 31))
-        font = QtGui.QFont()
-        font.setPixelSize(17)
-        self.pushButton_2.setFont(font)
-        self.pushButton_2.setStyleSheet("background:rgb(49, 45, 32);color:rgb(255,255,255);")
-        self.pushButton_2.setObjectName("pushButton")
 
         self.label_7 = QtWidgets.QLabel(self.centralwidget)
         self.label_7.setGeometry(QtCore.QRect(87, 20, 120, 50))
@@ -228,9 +233,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Генерирование пропусков"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:27px;\">Генерирование\n"
-"                        пропусков</span></p></body></html>\n"
-"                    "))
+        self.label.setText(
+            _translate("MainWindow", "<html><head/><body><p><span style=\" font-size:27px;\">Генерирование\n"
+                                     "                        пропусков</span></p></body></html>\n"
+                                     "                    "))
         self.comboBox.setCurrentText(_translate("MainWindow", "Одному человеку"))
         self.comboBox.setItemText(0, _translate("MainWindow", "Одному человеку"))
         self.comboBox.setItemText(1, _translate("MainWindow", "Нескольким людям"))
@@ -243,16 +249,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.radioButton.setText(_translate("MainWindow", "Проживает в общежитии"))
         self.radioButton_2.setText(_translate("MainWindow", "Не проживает в общежитии"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\"\n"
-"                        font-size:15px;\">Выберите файл с фотографией</span></p><p align=\"center\"><span\n"
-"                        style=\" font-size:15px;\">(jpg, 3:4, ширина не менее 300px)</span></p></body></html>\n"
-"                    "))
-        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:16px;\">Окончание\n"
-"                        срока действия пропуска</span></p></body></html>\n"
-"                    "))
+                                                      "                        font-size:15px;\">Выберите файл с фотографией</span></p><p align=\"center\"><span\n"
+                                                      "                        style=\" font-size:15px;\">(jpg, 3:4, ширина не менее 300px)</span></p></body></html>\n"
+                                                      "                    "))
+        self.label_3.setText(
+            _translate("MainWindow", "<html><head/><body><p><span style=\" font-size:16px;\">Окончание\n"
+                                     "                        срока действия пропуска</span></p></body></html>\n"
+                                     "                    "))
         self.pushButton.setText(_translate("MainWindow", "Сгенерировать пропуск"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\"\n"
-"                        font-size:15px; font-weight:100;\">Инфа о входных данных(будет позже)</span></p></body></html>\n"
-"                    "))
+                                                      "                        font-size:15px; font-weight:100;\">Инфа о входных данных(будет позже)</span></p></body></html>\n"
+                                                      "                    "))
         self.label_5.setText(_translate("MainWindow", "Количество пропусков"))
         self.label_6.setText(_translate("MainWindow", "Начальный номер"))
         self.pushButton_2.setText(_translate("MainWindow", "Выбрать фото"))
