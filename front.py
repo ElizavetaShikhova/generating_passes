@@ -214,7 +214,7 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке, должно
 соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8,self.comboBox])
 
     def from_txt(self):
         """
@@ -240,7 +240,7 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке,
 должно соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8,self.comboBox])
 
     def from_exe(self):
         """
@@ -248,7 +248,7 @@ class MainWindow(Ui_MainWindow):
         """
         self.hide_everything()
         self.mode = 5
-        self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7])
+        self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7,self.comboBox])
         self.set_background('src/background2.jpeg')
 
         self.table = QTableWidget(self)
@@ -285,14 +285,14 @@ class MainWindow(Ui_MainWindow):
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
-                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton,self.pushButton_8])
+                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton,self.pushButton_8,self.comboBox])
 
         elif self.comboBox.currentText() == 'Нескольким людям':
-            self.show_widgets([self.pushButton_3, self.pushButton_4, self.pushButton_5,self.pushButton_8])
+            self.show_widgets([self.pushButton_3, self.pushButton_4, self.pushButton_5,self.pushButton_8,self.comboBox])
 
         elif self.comboBox.currentText() == 'Посетителям':
             self.mode = 3
-            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton,self.pushButton_8])
+            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton,self.pushButton_8,self.comboBox])
 
     def show_widgets(self, widgets):
         for i in widgets:
@@ -334,5 +334,6 @@ class MainWindow(Ui_MainWindow):
 
     def about_prog(self):
         self.hide_everything()
+        self.comboBox.hide()
         self.show_widgets([self.label_11,self.pushButton_7])
         self.set_background('src/background3.jpg')
