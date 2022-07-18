@@ -117,7 +117,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton.setObjectName("pushButton")
 
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(226, 157, 522, 261))
+        self.label_4.setGeometry(QtCore.QRect(226, 157, 524, 261))
         self.label_4.setFont(font16)
         self.label_4.setObjectName("label_4")
 
@@ -148,7 +148,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.spinBox_2.setObjectName("spinBox_2")
 
         self.label_7 = QtWidgets.QLabel(self.centralwidget)
-        self.label_7.setGeometry(QtCore.QRect(87, 20, 120, 50))
+        self.label_7.setGeometry(QtCore.QRect(87, 30, 120, 50))
         font = QtGui.QFont()
         font.setPixelSize(26)
         font.setBold(True)
@@ -218,6 +218,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         font.setBold(True)
         self.label_8.setFont(font)
         self.label_8.setObjectName("label_8")
+
+        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_8.setGeometry(QtCore.QRect(815,390, 92, 21))
+        self.pushButton_8.setText('О программе)')
+        self.pushButton_8.setStyleSheet('background:rgba(255,255,255,0);color:rgb(140,110,70);')
+        font = QtGui.QFont()
+        font.setPixelSize(14)
+        font.setUnderline(True)
+        self.pushButton_8.setFont(font)
+        self.pushButton_8.setObjectName("pushButton_8")
+
+        self.label_11 = QtWidgets.QLabel(self.centralwidget)
+        self.label_11.setGeometry(QtCore.QRect(243, 155, 524, 290))
+        font = QtGui.QFont()
+        font.setFamily("Segoe Print")
+        font.setPixelSize(14)
+        self.label_11.setFont(font)
+        self.label_11.setObjectName("label_11")
+
+
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 972, 21))
@@ -262,6 +282,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                                                       "                    "))
         self.label_5.setText(_translate("MainWindow", "Количество пропусков"))
         self.label_6.setText(_translate("MainWindow", "Начальный номер"))
+        self.label_11.setText(_translate("MainWindow", """
+         Привет! Меня зовут Плюшка! Все пандочки любят играть
+       в прятки. Я и Соня спрятались от Конфетки. Пока она нас
+      ищет, я могу тебе рассказать о том, где мы обитаем.
+
+   Мы находимся в программе, которая писалась с помощью любви
+  и питона с 11 июня по 19 июля 2022 года. Ее делали
+ замечательные ребята, которые не договорились, чье имя
+ будет стоять впереди: Шихова Лиза и Сафронов Саша,
+    которые закончат (или уже закончили) МатИнф
+                   СУНЦа    УрФУ в 2023 году"""))
         self.pushButton_2.setText(_translate("MainWindow", "Выбрать фото"))
         self.label_7.setText(_translate("MainWindow", "Успешно"))
         self.pushButton_3.setText(_translate("MainWindow", "При помощи txt"))

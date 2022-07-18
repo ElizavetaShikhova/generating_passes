@@ -23,6 +23,7 @@ class MainWindow(Ui_MainWindow):
         self.pushButton_4.clicked.connect(self.from_csv)
         self.pushButton_5.clicked.connect(self.from_exe)
         self.pushButton_7.clicked.connect(self.choose_mode)
+        self.pushButton_8.clicked.connect(self.about_prog)
         self.dateEdit.setDate(datetime.now())
         self.choose_mode()
 
@@ -155,7 +156,7 @@ class MainWindow(Ui_MainWindow):
                 self.label_7.show()  # Скажем, что все получилось
 
         except Exception as er:
-            if self.mode!=1:
+            if self.mode != 1:
                 self.label_9.hide()
                 self.label_10.hide()
             if isinstance(er, CustomException):  # Печатаем ошибку, если она кастомная
@@ -197,7 +198,7 @@ class MainWindow(Ui_MainWindow):
         self.hide_everything()
         self.mode = 2
         self.pushButton_2.move(398, 420)
-        self.label_9.move(590,420)
+        self.label_9.move(590, 420)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл csv')
         self.label_4.setText("""
@@ -213,7 +214,7 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке, должно
 соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8])
 
     def from_txt(self):
         """
@@ -222,7 +223,7 @@ class MainWindow(Ui_MainWindow):
         self.hide_everything()
         self.mode = 4
         self.pushButton_2.move(398, 420)
-        self.label_9.move(590,420)
+        self.label_9.move(590, 420)
         self.pushButton_2.setText('Выбрать папку c фото')
         self.pushButton_6.setText('Выбрать файл txt')
         self.label_4.setText("""
@@ -239,7 +240,7 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке,
 должно соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8])
 
     def from_exe(self):
         """
@@ -260,7 +261,7 @@ class MainWindow(Ui_MainWindow):
         self.table.setRowCount(100)
 
         self.pushButton_2.move(398, 480)
-        self.label_9.move(590,480)
+        self.label_9.move(590, 480)
         for row in range(100):
             for col in range(5):
                 self.table.setItem(row, col, QTableWidgetItem(''))
@@ -280,18 +281,18 @@ class MainWindow(Ui_MainWindow):
         if self.comboBox.currentText() == 'Одному человеку':
             self.mode = 1
             self.pushButton_2.move(398, 420)
-            self.label_9.move(590,420)
+            self.label_9.move(590, 420)
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
-                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton])
+                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton,self.pushButton_8])
 
         elif self.comboBox.currentText() == 'Нескольким людям':
-            self.show_widgets([self.pushButton_3, self.pushButton_4, self.pushButton_5])
+            self.show_widgets([self.pushButton_3, self.pushButton_4, self.pushButton_5,self.pushButton_8])
 
         elif self.comboBox.currentText() == 'Посетителям':
             self.mode = 3
-            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton])
+            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton,self.pushButton_8])
 
     def show_widgets(self, widgets):
         for i in widgets:
@@ -302,7 +303,7 @@ class MainWindow(Ui_MainWindow):
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
                        self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
                        self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6,
-                       self.pushButton_7, self.label_8,self.label_9,self.label_10]
+                       self.pushButton_7, self.label_8, self.label_9, self.label_10,self.label_11,self.pushButton_8]
         for i in all_widgets:
             i.hide()
         try:
@@ -316,7 +317,7 @@ class MainWindow(Ui_MainWindow):
         self.lineEdit_2.setText('')
         self.dateEdit.setDate(datetime.now())
         self.pushButton_2.move(398, 420)
-        self.label_9.move(590,420)
+        self.label_9.move(590, 420)
         self.label_9.hide()
         self.label_10.hide()
         try:
@@ -326,8 +327,12 @@ class MainWindow(Ui_MainWindow):
         if self.mode == 5:
             self.from_exe()
 
-
     def set_background(self, url):
         palette = QPalette()
         palette.setBrush(QPalette.Background, QBrush(QPixmap(url)))
         self.setPalette(palette)
+
+    def about_prog(self):
+        self.hide_everything()
+        self.show_widgets([self.label_11,self.pushButton_7])
+        self.set_background('src/background3.jpg')
