@@ -125,8 +125,8 @@ class MainWindow(Ui_MainWindow):
             generator.write(self.path_of_pdf)
 
     def choose_save_path(self):
-        return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
-                                           self.tr("PDF files (*.pdf)"))[0]
+        return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk.pdf",
+                                           self.tr("All files (*.*)"))[0]
 
     def make_pdf(self):
         """
