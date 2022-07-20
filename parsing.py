@@ -15,20 +15,14 @@ class Parser:
         # что так будет удобнее
 
         # информацию о формате данных смотреть в readme.md
-        __txt_terms = {
+        __txt_n_csv_terms = {
             'status_student': '',
             'status_participant': 'ум',
             'status_prep_course_student': 'пк',
             'dorm_yes': 'общ',
             'dorm_no': ''
         }
-        __csv_terms = {
-            'status_student': '',
-            'status_participant': 'у',
-            'status_prep_course_student': 'пк',
-            'dorm_yes': 'общ',
-            'dorm_no': ''
-        }
+
         __table_terms = {
             'status_student': 'об',
             'status_participant': 'ум',
@@ -36,7 +30,7 @@ class Parser:
             'dorm_yes': 'д',
             'dorm_no': 'н'
         }
-        self.terms = {'txt': __txt_terms, 'csv': __csv_terms, 'table': __table_terms}
+        self.terms = {'txt': __txt_n_csv_terms, 'csv': __txt_n_csv_terms, 'table': __table_terms}
 
     def clear(self):
         """
