@@ -15,6 +15,7 @@ def check_for_libs():
 
 
 check_for_libs()
+del check_for_libs
 
 
 import sys
