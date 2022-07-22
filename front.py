@@ -126,7 +126,7 @@ class MainWindow(Ui_MainWindow):
 
     def choose_save_path(self):
         return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
-                                           self.tr("PDF files (*.pdf)"))[0]
+                                           self.tr("PDF files (*.pdf)"), QFileDialog.DontUseNativeDialog)[0]
 
     def make_pdf(self):
         """
@@ -188,7 +188,7 @@ class MainWindow(Ui_MainWindow):
 
 
     def choose_file(self):
-        self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
+        self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '', QFileDialog.DontUseNativeDialog)[0]
         if self.path_of_file:
             self.label_10.show()
 
