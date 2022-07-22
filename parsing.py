@@ -73,8 +73,9 @@ class Parser:
                                   f'{_full_name_for_exceptions} введена неправильно: {expired}')
 
         if person.expired <= datetime.now():
-            raise CustomException(f'Осторожно! {_full_name_for_exceptions} - это путешественник во времени!'
-                                  f'Дата окончания действия пропуска уже прошла!')
+            raise CustomException(f'Дата окончания срока действия пропуска уже прошла, поэтому Пандочка хотела бы '
+                                  f'взять автограф у такого крутого путешественника во времени, '
+                                  f'как {_full_name_for_exceptions} :)')
 
         if status == self.terms[cur_terms]['status_student']:
             person.status = Status.student
@@ -84,7 +85,8 @@ class Parser:
             person.status = Status.prep_course_student
         else:
             self.clear()
-            raise CustomException(f'Статус для {_full_name_for_exceptions} введен неправильно: {status}')
+            raise CustomException(f'Пандочка не знает, что писать в пропуске для {_full_name_for_exceptions}. '
+                                  f'Это учащийся, ученик мероприятия или слушатель подготовительных курсов?')
 
         if dorm == self.terms[cur_terms]['dorm_yes']:
             person.dorm = True
@@ -92,16 +94,15 @@ class Parser:
             person.dorm = False
         else:
             self.clear()
-            raise CustomException(f'Факт проживания в общежитии для {_full_name_for_exceptions} '
-                                  f'введен неправильно: {dorm}')
+            raise CustomException(f'Пандочка так и не поняла, будет ли {_full_name_for_exceptions} жить в общежитии?')
 
         _path_to_photo = photos_dir + os.sep + f'{person.surname}_{person.name}.jpg'
         if os.path.exists(_path_to_photo):
             person.photo = _path_to_photo
         else:
             self.clear()
-            raise CustomException(f'Нет фотографии для {_full_name_for_exceptions}. Возможно, она есть, '
-                                  f'только подписана неправильно :)')
+            raise CustomException(f'Пандочка не может найти фотографию для {_full_name_for_exceptions}. '
+                                  f'Может быть, фотография есть, но подписана неправильно :)')
 
         return person
 
@@ -111,7 +112,7 @@ class Parser:
         """
 
         if txt_fname[-3:] != 'txt':
-            raise CustomException('Неверное расширение файла')
+            raise CustomException('Пандочка хочет файл с другим расширением')
 
         with open(txt_fname, 'r', encoding='utf-8') as file:
             for line in file.readlines():
@@ -120,8 +121,7 @@ class Parser:
                 try:
                     _surname, _name, _expired, *_flags = line.split()
                 except ValueError:
-                    raise CustomException('Слишком мало параметров для неизвестно кого, '
-                                          'поэтому и неизвестно для кого слишком мало параметров')
+                    raise CustomException('Пандочка хочет больше параметров, только не знает для кого')
                 # формат подразумевает необязательные флаги для общаги и статуса, поэтому приходится их отдельно парсить
                 # т.к. основная функция проверки не предусмотрена для этого
                 if len(_flags) == 0:
@@ -137,7 +137,7 @@ class Parser:
                 elif len(_flags) == 2:
                     _status, _dorm = _flags
                 else:
-                    raise CustomException(f'Для {_surname + " " + _name} слишком много параметров')
+                    raise CustomException(f'У Пандочки закружилась голова от такого большого количества параметров для {_surname + " " + _name}')
                 person = self.__check_n_get_person('txt', photos_dir, _surname, _name, _expired, _status, _dorm)
                 self.plist.append(person)
 
@@ -147,7 +147,7 @@ class Parser:
         """
 
         if csv_fname[-3:] != 'csv':
-            raise CustomException('Неверное расширение файла')
+            raise CustomException('Пандочка хочет файл с другим расширением')
 
         with open(csv_fname, 'r', encoding='utf-8') as file:
             reader = csv.reader(file, delimiter=';')
@@ -157,7 +157,7 @@ class Parser:
                     continue
                 line_counter += 1
                 if len(line) != 5:
-                    raise CustomException(f'Неверное число параметров в {line_counter} строке')
+                    raise CustomException(f'Пандочка хочет больше параметров в {line_counter} строке')
                 _surname, _name, _status, _dorm, _expired = line
                 person = self.__check_n_get_person('csv', photos_dir, _surname, _name, _expired, _status, _dorm)
                 self.plist.append(person)
