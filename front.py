@@ -180,11 +180,12 @@ class MainWindow(Ui_MainWindow):
 
     def choose_photo(self):
         if self.comboBox.currentText() == 'Нескольким людям':
-            self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
+            self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".", QFileDialog.DontUseNativeDialog)
         else:
-            self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '')[0]
+            self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '', QFileDialog.DontUseNativeDialog)[0]
         if self.path_of_photo or self.path_of_dir:
             self.label_9.show()
+
 
     def choose_file(self):
         self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
