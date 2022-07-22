@@ -229,14 +229,47 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.pushButton_8.setFont(font)
         self.pushButton_8.setObjectName("pushButton_8")
 
+        self.pushButton_9 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_9.setGeometry(QtCore.QRect(865, 12, 100, 41))
+        self.pushButton_9.setStyleSheet("background:rgb(225, 206, 147)")
+        font = QtGui.QFont()
+        font.setPixelSize(19)
+        self.pushButton_9.setFont(font)
+        self.pushButton_9.setText('Настройки')
+        self.pushButton_9.setObjectName("pushButton_9")
+
         self.label_11 = QtWidgets.QLabel(self.centralwidget)
-        self.label_11.setGeometry(QtCore.QRect(243, 155, 524, 290))
+        self.label_11.setGeometry(QtCore.QRect(195, 105, 585, 320))
         font = QtGui.QFont()
         font.setFamily("Segoe Print")
         font.setPixelSize(14)
         self.label_11.setFont(font)
         self.label_11.setObjectName("label_11")
 
+        self.label_12 = QtWidgets.QLabel(self.centralwidget)
+        self.label_12.setGeometry(QtCore.QRect(262, 35, 448, 255))
+        font = QtGui.QFont()
+        font.setPixelSize(21)
+        self.label_12.setFont(font)
+        self.label_12.setObjectName("label_12")
+        self.label_12.setText('Выберите вид окна для выбора папки с фото')
+
+        self.radioButton_3 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_3.setGeometry(QtCore.QRect(354, 220, 226, 25))
+        self.radioButton_3.setFocusPolicy(QtCore.Qt.StrongFocus)
+        font.setPixelSize(20)
+        font.setItalic(True)
+        self.radioButton_3.setFont(font)
+        self.radioButton_3.setObjectName("radioButton_3")
+        self.radioButton_3.setText("Стандартное окно")
+        self.radioButton_3.setChecked(True)
+
+        self.radioButton_4 = QtWidgets.QRadioButton(self.centralwidget)
+        self.radioButton_4.setGeometry(QtCore.QRect(354, 270, 265, 50))
+        self.radioButton_4.setFocusPolicy(QtCore.Qt.StrongFocus)
+        self.radioButton_4.setFont(font)
+        self.radioButton_4.setObjectName("radioButton_4")
+        self.radioButton_4.setText("Кастомное окно, чтобы\nвидеть файлы в папке")
 
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -283,16 +316,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.label_5.setText(_translate("MainWindow", "Количество пропусков"))
         self.label_6.setText(_translate("MainWindow", "Начальный номер"))
         self.label_11.setText(_translate("MainWindow", """
-         Привет! Меня зовут Плюшка! Все пандочки любят играть
-       в прятки. Я и Соня спрятались от Конфетки. Пока она нас
-      ищет, я могу тебе рассказать о том, где мы обитаем.
+               Привет! Меня зовут Плюшка! Все пандочки любят играть в
+           прятки. Я и Соня спрятались от Конфетки. Пока она нас ищет, я
+                    могу тебе рассказать о том, где мы обитаем.
 
-   Мы находимся в программе, которая писалась с помощью любви
-  и питона с 11 июня по 19 июля 2022 года. Ее делали
- замечательные ребята, которые не договорились, чье имя
- будет стоять впереди: Шихова Лиза и Сафронов Саша,
-    которые закончат (или уже закончили) МатИнф
-                   СУНЦа    УрФУ в 2023 году"""))
+Мы находимся в программе, которая писалась с помощью любви и питона
+   с 11 июня по 19 июля 2022 года. Ее делали замечательные
+          ребята, которые не договорились, чье имя будет стоять
+        впереди: Шихова Лиза и Сафронов Саша, которые закончат
+          (или уже закончили) МатИнф СУНЦа  УрФУ в 2023 году
+         Если есть вопросы или пожелания, то обращайся к ним. 
+                   telegram: @meanlessnessener (Саша),
+                                        @minoorrr (Лиза)"""))
         self.pushButton_2.setText(_translate("MainWindow", "Выбрать фото"))
         self.label_7.setText(_translate("MainWindow", "Успешно"))
         self.pushButton_3.setText(_translate("MainWindow", "При помощи txt"))
