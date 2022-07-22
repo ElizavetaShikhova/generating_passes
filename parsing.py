@@ -84,7 +84,7 @@ class Parser:
             person.status = Status.prep_course_student
         else:
             self.clear()
-            raise CustomException(f'Статус для {_full_name_for_exceptions} введен неправильно: {status}')
+            raise CustomException(f'Пандочка не понимает статус для {_full_name_for_exceptions}')
 
         if dorm == self.terms[cur_terms]['dorm_yes']:
             person.dorm = True
