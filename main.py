@@ -5,20 +5,11 @@ if os.name == 'nt':
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('Liza_plus_Sasha_inc')
 
 
-def check_for_libs():
-    try:
-        import fpdf
-        import PyQt5
-    except ModuleNotFoundError:
-        if os.name == 'nt':
-            os.system('pip install fpdf pyqt5')
-
-
-check_for_libs()
-del check_for_libs
-
-
 import sys
+sys.path.append(os.getcwd())
+sys.path.append(os.path.join(os.getcwd(), 'src', 'dependencies'))
+
+
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import QSize
