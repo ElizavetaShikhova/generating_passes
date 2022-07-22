@@ -56,9 +56,9 @@ class Parser:
         person = Person('', '', date(1, 1, 1), Status.student, False, '')
 
         if not surname:
-            raise CustomException(f'Не введена фамилия для человека с именем "{name}"')
+            raise CustomException(f'Пандочка не нашла фамилию для человека с именем "{name}"')
         if not name:
-            raise CustomException(f'Не введено имя для человека с фамилией "{surname}"')
+            raise CustomException(f'Пандочка не нашла имя для человека с фамилией "{surname}"')
 
         person.surname = surname
         person.name = name
@@ -69,12 +69,12 @@ class Parser:
             person.expired = datetime.strptime(expired, '%d.%m.%Y')
         except ValueError:
             self.clear()
-            raise CustomException(f'Дата окончания срока действия пропуска для '
-                                  f'{_full_name_for_exceptions} введена неправильно: {expired}')
+            raise CustomException(
+                f'Пандочке не понравился формат даты окончания действия пропуска для {_full_name_for_exceptions}')
 
         if person.expired <= datetime.now():
-            raise CustomException(f'Осторожно! {_full_name_for_exceptions} - это путешественник во времени!'
-                                  f'Дата окончания действия пропуска уже прошла!')
+            raise CustomException(
+                f'Дата окончания срока действия пропуска уже прошла, поэтому Пандочка хотела бы взять автограф у такого крутого путешественника во времени, как {_full_name_for_exceptions} :)')
 
         if status == self.terms[cur_terms]['status_student']:
             person.status = Status.student

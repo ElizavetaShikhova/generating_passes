@@ -79,7 +79,7 @@ class GenPdf:
         try:
             self.pdf.image(person.photo, 5, 14, 24, 32, type='JPG')
         except RuntimeError:
-            raise CustomException(f'Фотография для {person.surname + " " + person.name} не найдена')
+            raise CustomException(f'Пандочка не нашла фотографию для {person.surname + " " + person.name}')
 
         self.pdf.set_font('PFM', 'bold')
         self.set_color_n_size(0, 128, 0, 7)
@@ -99,7 +99,7 @@ class GenPdf:
         делаем пропуски для гостей/посетителей
         """
         if start_number <= 0 or total_number <= 0:
-            raise CustomException('Ты че, самый умный? А ну живо убрал ненатуральные числа!')
+            raise CustomException('Пандочка возмущена присутствием ненатуральных чисел!')
 
         for serial_number in range(start_number, start_number+total_number):
             self.pdf.add_page()
@@ -122,8 +122,7 @@ class GenPdf:
     def write(self, output_file: str):
         # чтобы еще раз напечатать pdf-ку надо заново инициализировать экземпляр
         if self.already_written:
-            raise CustomException('Этот экземпляр класса уже однажды выписал пропуска (дайте ему отдохнуть, он устал). '
-                                  'Чтобы еще раз написать pdf, надо переинициализировать его')
+            raise CustomException('Пандочка  уже выписала пропуска. Дайте ей отдохнуть, она устала')
         self.pdf.output(output_file)
         self.already_written = True
 
