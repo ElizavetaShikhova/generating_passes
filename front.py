@@ -46,14 +46,14 @@ class MainWindow(Ui_MainWindow):
         for i in [self.dormitory, self.name, self.surname,
                   self.path_of_photo]:  # Проверяем, все ли переменные имеют значение !None
             if i is None or i == '':
-                raise CustomException('Не хватает данных')
+                raise CustomException('Пандочке не хватает данных')
 
         if 'jpg' not in self.path_of_photo[-4:] and 'jpeg' not in self.path_of_photo[-4:]:  # проверяем формат фото
             self.label_9.hide()
-            raise CustomException('Неверный формат фото')
+            raise CustomException('Пандочка ждёт другой формат фото')
 
         if self.date <= datetime.now():  # не прошел ли срок окончания действия пропуска
-            raise CustomException('Неверная дата')
+            raise CustomException('Пандочка думает,что это неверная дата')
 
     def preparing(self):
         self.dormitory = self.radioButton.isChecked()
@@ -83,7 +83,7 @@ class MainWindow(Ui_MainWindow):
         Генерация pdf из csv
         """
         if not self.path_of_file or not self.path_of_dir:
-            raise CustomException('Не хватает данных')
+            raise CustomException('Пандочке не хватает данных')
         parser.parse_from_csv(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
         self.path_of_pdf = self.choose_save_path()
@@ -106,7 +106,7 @@ class MainWindow(Ui_MainWindow):
         Генерация pdf из txt
         """
         if not self.path_of_file or not self.path_of_dir:
-            raise CustomException('Не хватает данных')
+            raise CustomException('Пандочке не хватает данных')
         parser.parse_from_txt(self.path_of_file, self.path_of_dir)
         generator.create_group(parser.get_person_list())
         self.path_of_pdf = self.choose_save_path()
@@ -118,7 +118,7 @@ class MainWindow(Ui_MainWindow):
         Генерация pdf из таблички
         """
         if not self.path_of_dir:
-            raise CustomException('Не хватает данных')
+            raise CustomException('Пандочке не хватает данных')
         parser.parse_from_table(self.table, self.path_of_dir)
         generator.create_group(parser.get_person_list())
         self.path_of_pdf = self.choose_save_path()
@@ -348,4 +348,4 @@ class MainWindow(Ui_MainWindow):
     def settings(self):
         self.hide_everything()
         self.comboBox.hide()
-        self.show_widgets([self.pushButton_7,self.radioButton_3,self.radioButton_4,self.label_12])
+        self.show_widgets([self.pushButton_7,self.radioButton_3,self.radioButton_4,self.label_12,self.pushButton_8])
