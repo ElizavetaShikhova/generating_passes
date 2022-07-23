@@ -126,6 +126,9 @@ class MainWindow(Ui_MainWindow):
             generator.write(self.path_of_pdf)
 
     def choose_save_path(self):
+        if self.radioButton_5.isChecked():
+            return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk", self.tr("PDF files (*.pdf)"),
+                                            options=QFileDialog.DontUseNativeDialog)[0]
         return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
                                            self.tr("PDF files (*.pdf)"))[0]
 
@@ -181,19 +184,28 @@ class MainWindow(Ui_MainWindow):
 
     def choose_photo(self):
         if self.comboBox.currentText() == 'Нескольким людям':
-            if self.radioButton_4.isChecked():
-                self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".", QFileDialog.DontUseNativeDialog)
+            if self.radioButton_4.isChecked() or self.radioButton_5.isChecked():
+                self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".",
+                                                                    QFileDialog.DontUseNativeDialog)
             else:
                 self.path_of_dir = QFileDialog.getExistingDirectory(self, "Выбрать папку", ".")
 
         else:
-            self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '')[0]
+            if self.radioButton_5.isChecked():
+                self.path_of_photo = \
+                QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '', options=QFileDialog.DontUseNativeDialog)[
+                    0]
+            else:
+                self.path_of_photo = QFileDialog.getOpenFileName(self, 'Выбрать картинку(-и)', '')[0]
         if self.path_of_photo or self.path_of_dir:
             self.label_9.show()
 
-
     def choose_file(self):
-        self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
+        if self.radioButton_5.isChecked():
+            self.path_of_file = \
+            QFileDialog.getOpenFileName(self, 'Выбрать файл', '', options=QFileDialog.DontUseNativeDialog)[0]
+        else:
+            self.path_of_file = QFileDialog.getOpenFileName(self, 'Выбрать файл', '')[0]
         if self.path_of_file:
             self.label_10.show()
 
@@ -220,7 +232,8 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке, должно
 соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8,self.comboBox])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,
+             self.pushButton_8, self.comboBox])
 
     def from_txt(self):
         """
@@ -246,7 +259,8 @@ class MainWindow(Ui_MainWindow):
 Название каждой фотографии, которая лежит в этой папке,
 должно соответствовать формату Фамилия_Имя.jpg""")
         self.show_widgets(
-            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,self.pushButton_8,self.comboBox])
+            [self.pushButton_2, self.pushButton, self.label_4, self.pushButton_6, self.pushButton_7, self.label_8,
+             self.pushButton_8, self.comboBox])
 
     def from_exe(self):
         """
@@ -254,7 +268,7 @@ class MainWindow(Ui_MainWindow):
         """
         self.hide_everything()
         self.mode = 5
-        self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7,self.comboBox])
+        self.show_widgets([self.pushButton, self.pushButton_2, self.pushButton_7, self.comboBox])
         self.set_background('src/background2.jpeg')
 
         self.table = QTableWidget(self)
@@ -291,14 +305,18 @@ class MainWindow(Ui_MainWindow):
             self.pushButton_2.setText('Выбрать фото')
             self.show_widgets(
                 [self.lineEdit, self.lineEdit_2, self.comboBox_2, self.radioButton, self.radioButton_2, self.label_2,
-                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton,self.pushButton_8,self.comboBox])
+                 self.label_3, self.dateEdit, self.pushButton_2, self.pushButton, self.pushButton_8, self.comboBox])
 
         elif self.comboBox.currentText() == 'Нескольким людям':
-            self.show_widgets([self.pushButton_3, self.pushButton_4, self.pushButton_5,self.pushButton_8,self.comboBox,self.pushButton_9])
+            self.show_widgets(
+                [self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton_8, self.comboBox,
+                 self.pushButton_9])
 
         elif self.comboBox.currentText() == 'Посетителям':
             self.mode = 3
-            self.show_widgets([self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton,self.pushButton_8,self.comboBox])
+            self.show_widgets(
+                [self.label_5, self.spinBox, self.label_6, self.spinBox_2, self.pushButton, self.pushButton_8,
+                 self.comboBox])
 
     def show_widgets(self, widgets):
         for i in widgets:
@@ -309,8 +327,8 @@ class MainWindow(Ui_MainWindow):
                        self.label_2, self.label_3, self.label_4, self.label_5, self.label_6, self.dateEdit,
                        self.comboBox_2, self.lineEdit, self.lineEdit_2, self.pushButton_2, self.label_7,
                        self.pushButton_3, self.pushButton_4, self.pushButton_5, self.pushButton, self.pushButton_6,
-                       self.pushButton_7, self.label_8, self.label_9, self.label_10,self.label_11,self.pushButton_8,
-                       self.pushButton_9,self.radioButton_3,self.radioButton_4,self.label_12]
+                       self.pushButton_7, self.label_8, self.label_9, self.label_10, self.label_11, self.pushButton_8,
+                       self.pushButton_9, self.radioButton_3, self.radioButton_4, self.label_12, self.radioButton_5]
         for i in all_widgets:
             i.hide()
         try:
@@ -342,10 +360,11 @@ class MainWindow(Ui_MainWindow):
     def about_prog(self):
         self.hide_everything()
         self.comboBox.hide()
-        self.show_widgets([self.label_11,self.pushButton_7])
+        self.show_widgets([self.label_11, self.pushButton_7])
         self.set_background('src/background3.jpg')
 
     def settings(self):
         self.hide_everything()
         self.comboBox.hide()
-        self.show_widgets([self.pushButton_7,self.radioButton_3,self.radioButton_4,self.label_12])
+        self.show_widgets([self.pushButton_7, self.radioButton_3, self.radioButton_4, self.label_12, self.radioButton_5,
+                           self.pushButton_8])
