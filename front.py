@@ -127,9 +127,9 @@ class MainWindow(Ui_MainWindow):
 
     def choose_save_path(self):
         if self.radioButton_5.isChecked():
-            return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk", self.tr("PDF files (*.pdf)"),
+            return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk.pdf", self.tr("PDF files (*.pdf)"),
                                             options=QFileDialog.DontUseNativeDialog)[0]
-        return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk",
+        return QFileDialog.getSaveFileName(self, self.tr("Сохранить файл"), f"/propusk.pdf",
                                            self.tr("PDF files (*.pdf)"))[0]
 
     def make_pdf(self):
