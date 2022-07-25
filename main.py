@@ -6,8 +6,8 @@ if os.name == 'nt':
 
 
 import sys
-# sys.path.append(os.getcwd())
-# sys.path.append(os.path.join(os.getcwd(), 'src', 'dependencies'))
+sys.path.append(os.getcwd())
+sys.path.append(os.path.join(os.getcwd(), 'src', 'dependencies'))
 
 
 from PyQt5.QtWidgets import QApplication
